@@ -13,28 +13,83 @@
       --r:18px;
     }
     *{box-sizing:border-box}
-    body{margin:0; font-family: ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial; background: radial-gradient(1200px 800px at 15% 10%, rgba(255,106,0,.18), transparent 55%), radial-gradient(900px 600px at 85% 15%, rgba(45,212,191,.10), transparent 50%), var(--bg); color:var(--text)}
+    body{
+      margin:0;
+      font-family: ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial;
+      background:
+        radial-gradient(1200px 800px at 15% 10%, rgba(255,106,0,.18), transparent 55%),
+        radial-gradient(900px 600px at 85% 15%, rgba(45,212,191,.10), transparent 50%),
+        var(--bg);
+      color:var(--text);
+    }
     a{color:inherit}
+
+    /* Garde-fous anti "texte noir" (Safari/iOS peut retomber sur styles par défaut) */
+    table, th, td { color: var(--text); }
+    b, strong { color: var(--text); }
+    th { font-weight: 800; }
+    .muted b, .muted strong { color: var(--text); }
+
     .wrap{max-width:1050px; margin:0 auto; padding:20px}
-    .top{display:flex; gap:14px; align-items:center; justify-content:space-between; margin:10px 0 18px}
+    .top{display:flex; gap:14px; align-items:flex-start; justify-content:space-between; margin:10px 0 18px}
     .brand{display:flex; gap:10px; align-items:center}
     .logo{width:40px; height:40px; border-radius:12px; background: linear-gradient(135deg, var(--accent), var(--accent2)); box-shadow: var(--shadow)}
     .title{font-weight:800; letter-spacing:.2px}
     .subtitle{color:var(--muted); font-size:13px; margin-top:2px}
-    .pill{display:inline-flex; align-items:center; gap:8px; padding:9px 12px; border:1px solid var(--border); background: rgba(255,255,255,.03); border-radius:999px; color:var(--muted); font-size:13px}
+
+    .pill{
+      display:inline-flex; align-items:center; gap:10px;
+      padding:9px 12px; border:1px solid var(--border);
+      background: rgba(255,255,255,.03);
+      border-radius:999px; color:var(--muted); font-size:13px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+    }
+    .modebar{display:inline-flex; gap:8px; align-items:center}
+    .modebtn{
+      padding:7px 10px;
+      border-radius:999px;
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.04);
+      color: var(--text);
+      cursor:pointer;
+      font-weight:800;
+      font-size:12px;
+      touch-action:manipulation;
+      -webkit-tap-highlight-color: transparent;
+      appearance:none; -webkit-appearance:none;
+    }
+    .modebtn.primary{
+      background: linear-gradient(135deg, rgba(255,106,0,.95), rgba(255,138,61,.95));
+      border-color: transparent;
+      color:#1a120b;
+    }
+
     .grid{display:grid; grid-template-columns: 1.2fr .8fr; gap:16px}
     @media (max-width: 980px){ .grid{grid-template-columns:1fr} }
 
-    .card{background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02)); border:1px solid var(--border); border-radius:var(--r); box-shadow: var(--shadow)}
+    .card{
+      background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+      border:1px solid var(--border);
+      border-radius:var(--r);
+      box-shadow: var(--shadow)
+    }
     .card .hd{padding:16px 16px 0}
     .card .bd{padding:16px}
     .h1{font-size:18px; font-weight:800; margin:0}
-    .h2{font-size:14px; font-weight:750; margin:0 0 8px}
+    .h2{font-size:14px; font-weight:800; margin:0 0 8px}
     .muted{color:var(--muted)}
     .row{display:flex; gap:10px; flex-wrap:wrap}
     .sp{height:10px}
+
     .stepper{display:flex; gap:8px; align-items:center; flex-wrap:wrap}
-    .dot{width:34px; height:34px; border-radius:12px; display:grid; place-items:center; font-size:13px; border:1px solid var(--border); background: rgba(255,255,255,.03); color:var(--muted); touch-action:manipulation; -webkit-tap-highlight-color: transparent; cursor:pointer; appearance:none; -webkit-appearance:none; outline:none}
+    .dot{
+      width:34px; height:34px; border-radius:12px; display:grid; place-items:center;
+      font-size:13px; border:1px solid var(--border);
+      background: rgba(255,255,255,.03); color:var(--muted);
+      touch-action:manipulation; -webkit-tap-highlight-color: transparent;
+      cursor:pointer; appearance:none; -webkit-appearance:none; outline:none
+    }
     .dot:focus-visible{outline:2px solid rgba(255,255,255,.22)}
     .dot.active{background: rgba(255,106,0,.16); color: #ffe6d6; border-color: rgba(255,106,0,.35)}
     .dot.done{background: rgba(45,212,191,.12); color: #d7fff7; border-color: rgba(45,212,191,.35)}
@@ -47,25 +102,46 @@
     @media (max-width: 780px){ .seg{grid-template-columns:1fr 1fr} }
     .seg2{display:grid; grid-template-columns: repeat(2, 1fr); gap:10px}
 
-    .opt{position:relative; padding:12px; border-radius:14px; border:1px solid var(--border); background: rgba(255,255,255,.03); cursor:pointer; user-select:none; min-height:54px; touch-action:manipulation; -webkit-tap-highlight-color: transparent; width:100%; text-align:left; appearance:none; -webkit-appearance:none; outline:none}
+    .opt{
+      position:relative; padding:12px; border-radius:14px;
+      border:1px solid var(--border); background: rgba(255,255,255,.03);
+      cursor:pointer; user-select:none; min-height:54px;
+      touch-action:manipulation; -webkit-tap-highlight-color: transparent;
+      width:100%; text-align:left; appearance:none; -webkit-appearance:none; outline:none
+    }
     .opt:hover{border-color: rgba(255,255,255,.18)}
     .opt:focus-visible{outline:2px solid rgba(255,255,255,.22)}
-    .opt .t{font-weight:750; font-size:14px}
+    .opt .t{font-weight:800; font-size:14px; color:var(--text)}
     .opt .s{color:var(--muted); font-size:12px; margin-top:4px}
     .opt.selected{outline: 2px solid rgba(255,106,0,.35); border-color: rgba(255,106,0,.35); background: rgba(255,106,0,.08)}
 
     .checklist{display:grid; gap:10px}
-    .chk{display:flex; gap:10px; align-items:flex-start; padding:12px; border:1px solid var(--border); background: rgba(255,255,255,.03); border-radius:14px; cursor:pointer; touch-action:manipulation; -webkit-tap-highlight-color: transparent; width:100%; text-align:left; appearance:none; -webkit-appearance:none; outline:none}
+    .chk{
+      display:flex; gap:10px; align-items:flex-start;
+      padding:12px; border:1px solid var(--border);
+      background: rgba(255,255,255,.03);
+      border-radius:14px; cursor:pointer;
+      touch-action:manipulation; -webkit-tap-highlight-color: transparent;
+      width:100%; text-align:left; appearance:none; -webkit-appearance:none; outline:none
+    }
     .chk:focus-visible{outline:2px solid rgba(255,255,255,.22)}
-    .box{width:18px; height:18px; border-radius:6px; border:1px solid var(--border); margin-top:2px; display:grid; place-items:center}
+    .box{width:18px; height:18px; border-radius:6px; border:1px solid var(--border); margin-top:2px; display:grid; place-items:center; color:var(--text)}
     .chk.selected .box{background: rgba(45,212,191,.16); border-color: rgba(45,212,191,.35)}
-    .chk .main{font-weight:750; font-size:14px}
+    .chk .main{font-weight:800; font-size:14px; color:var(--text)}
     .chk .sub{color:var(--muted); font-size:12px; margin-top:4px}
 
     .btnbar{display:flex; gap:10px; justify-content:space-between; margin-top:14px}
-    .btn{padding:11px 14px; border-radius:14px; border:1px solid var(--border); background: rgba(255,255,255,.04); color:var(--text); cursor:pointer; font-weight:750; touch-action:manipulation; -webkit-tap-highlight-color: transparent}
+    .btn{
+      padding:11px 14px; border-radius:14px; border:1px solid var(--border);
+      background: rgba(255,255,255,.04); color:var(--text);
+      cursor:pointer; font-weight:800; touch-action:manipulation; -webkit-tap-highlight-color: transparent
+    }
     .btn:hover{border-color: rgba(255,255,255,.18)}
-    .btn.primary{background: linear-gradient(135deg, rgba(255,106,0,.95), rgba(255,138,61,.95)); border-color: transparent; color:#130a05}
+    .btn.primary{
+      background: linear-gradient(135deg, rgba(255,106,0,.95), rgba(255,138,61,.95));
+      border-color: transparent;
+      color:#1a120b;
+    }
     .btn.primary:hover{filter:brightness(1.03)}
     .btn.ghost{background: transparent}
     .btn:disabled{opacity:.45; cursor:not-allowed}
@@ -73,23 +149,34 @@
     .side{display:grid; gap:16px}
     .kpi{display:grid; grid-template-columns: 1fr 1fr; gap:10px}
     .tile{padding:12px; border-radius:16px; border:1px solid var(--border); background: rgba(255,255,255,.03)}
-    .tile .v{font-size:18px; font-weight:850}
+    .tile .v{font-size:18px; font-weight:900; color:var(--text)}
     .tile .l{color:var(--muted); font-size:12px; margin-top:4px}
 
-    .badge{display:inline-flex; gap:8px; align-items:center; padding:8px 10px; border-radius:999px; border:1px solid var(--border); background: rgba(255,255,255,.03); font-size:13px; color:var(--muted)}
+    .badge{
+      display:inline-flex; gap:8px; align-items:center; padding:8px 10px;
+      border-radius:999px; border:1px solid var(--border);
+      background: rgba(255,255,255,.03); font-size:13px; color:var(--muted)
+    }
     .badge b{color:var(--text)}
-    .tag{display:inline-flex; gap:8px; align-items:center; padding:6px 10px; border-radius:999px; border:1px solid var(--border); background: rgba(255,255,255,.03); font-size:12px; color:var(--muted)}
+    .tag{
+      display:inline-flex; gap:8px; align-items:center; padding:6px 10px;
+      border-radius:999px; border:1px solid var(--border);
+      background: rgba(255,255,255,.03); font-size:12px; color:var(--muted)
+    }
 
     .rec{padding:14px; border-radius:18px; border:1px solid rgba(255,106,0,.35); background: rgba(255,106,0,.08)}
-    .rec .big{font-size:16px; font-weight:900}
+    .rec .big{font-size:16px; font-weight:900; color:var(--text)}
     .rec .price{font-weight:900; color:#ffe3d2}
     .list{margin:10px 0 0; padding-left:18px; color:var(--muted)}
     .list li{margin:4px 0}
 
     .seller{padding:14px; border-radius:18px; border:1px solid rgba(45,212,191,.35); background: rgba(45,212,191,.08)}
-    .seller .big{font-size:14px; font-weight:900}
+    .seller .big{font-size:14px; font-weight:900; color:var(--text)}
 
-    .mono{font-family: ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono",monospace; font-size:12px; color:var(--muted)}
+    .mono{
+      font-family: ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono",monospace;
+      font-size:12px; color:var(--muted)
+    }
 
     /* Print */
     @media print{
@@ -100,6 +187,7 @@
       .grid{grid-template-columns:1fr}
       .rec, .seller{border-color:#ddd; background:#fff}
       .muted, .list, .mono{color:#444}
+      table, th, td { color:#111; }
     }
   </style>
 </head>
@@ -113,8 +201,14 @@
           <div class="subtitle">Diagnostic usages (Wi-Fi / Internet / Mobile / Sécurité) → recommandation + scripts vendeur</div>
         </div>
       </div>
+
       <div class="pill" title="V1: sans données personnelles, utilisable sur tablette">
         <span>🟠</span> <span>V1 • 5 écrans • sans RGPD lourd</span>
+        <span style="opacity:.5">|</span>
+        <div class="modebar" aria-label="Mode">
+          <button class="modebtn" id="btnModeClientTop" type="button">Mode client</button>
+          <button class="modebtn" id="btnModeVendeurTop" type="button">Mode vendeur</button>
+        </div>
       </div>
     </div>
 
@@ -172,122 +266,69 @@
   // 1 fichier, sans dépendance
   // ===========================
 
-  // ---------------------------
-  // Données (V1) — prix "indicatifs" sauf remises Open (VALIDÉES PAR TOI)
-  // ---------------------------
   const OFFERS = {
     internet: [
-      {
-        id: 'lite',
-        name: 'Série Spéciale Livebox Lite Fibre',
-        tier: 1,
-        commitmentMonths: 12,
-        price: { intro: 29.99, after: null, promoNote: null },
-        includes: ['Livebox 5 (Wi-Fi 5)', 'TV (200 chaînes) + Décodeur UHD'],
-        hint: 'Simple, efficace — TV incluse.'
+      { id:'lite', name:'Série Spéciale Livebox Lite Fibre', tier:1, commitmentMonths:12,
+        price:{ intro:29.99, after:null, promoNote:null },
+        includes:['Livebox 5 (Wi-Fi 5)','TV (200 chaînes) + Décodeur UHD'],
+        hint:'Simple, efficace — TV incluse.'
       },
-      {
-        id: 'livebox',
-        name: 'Livebox Fibre',
-        tier: 2,
-        commitmentMonths: 12,
-        price: { intro: 29.99, after: 42.99, promoNote: '29,99€/mois pendant 12 mois puis 42,99€/mois' },
-        includes: ['Livebox S (Wi-Fi 7)', 'TV (200 chaînes) + Décodeur TV 6'],
-        hint: 'Base solide Wi-Fi 7.'
+      { id:'livebox', name:'Livebox Fibre', tier:2, commitmentMonths:12,
+        price:{ intro:29.99, after:42.99, promoNote:'29,99€/mois pendant 12 mois puis 42,99€/mois' },
+        includes:['Livebox S (Wi-Fi 7)','TV (200 chaînes) + Décodeur TV 6'],
+        hint:'Base solide Wi-Fi 7.'
       },
-      {
-        id: 'up',
-        name: 'Livebox Up Fibre',
-        tier: 3,
-        commitmentMonths: 12,
-        price: { intro: 39.99, after: 51.99, promoNote: '39,99€/mois pendant 12 mois puis 51,99€/mois' },
-        includes: ['Livebox 7 (Wi-Fi 7)', 'TV (200 chaînes) + Décodeur TV 6', '1 répéteur Wi-Fi'],
-        hint: 'Stabilité + usages intensifs.'
+      { id:'up', name:'Livebox Up Fibre', tier:3, commitmentMonths:12,
+        price:{ intro:39.99, after:51.99, promoNote:'39,99€/mois pendant 12 mois puis 51,99€/mois' },
+        includes:['Livebox 7 (Wi-Fi 7)','TV (200 chaînes) + Décodeur TV 6','1 répéteur Wi-Fi'],
+        hint:'Stabilité + usages intensifs.'
       },
-      {
-        id: 'max',
-        name: 'Livebox Max Fibre',
-        tier: 4,
-        commitmentMonths: 12,
-        price: { intro: 47.99, after: 57.99, promoNote: '47,99€/mois pendant 12 mois puis 57,99€/mois' },
-        includes: ['Livebox 7 (Wi-Fi 7)', 'TV (200 chaînes) + 2 Décodeurs TV 6', 'Jusqu\'à 3 répéteurs Wi-Fi'],
-        hint: 'Couverture + confort total.'
+      { id:'max', name:'Livebox Max Fibre', tier:4, commitmentMonths:12,
+        price:{ intro:47.99, after:57.99, promoNote:'47,99€/mois pendant 12 mois puis 57,99€/mois' },
+        includes:['Livebox 7 (Wi-Fi 7)','TV (200 chaînes) + 2 Décodeurs TV 6','Jusqu\'à 3 répéteurs Wi-Fi'],
+        hint:'Couverture + confort total.'
       },
     ],
 
     mobileProfiles: [
-      { id: 'essentiel', name: 'Essentiel', desc: 'Usage maîtrisé, Wi-Fi fréquent' },
-      { id: 'confort', name: 'Confort', desc: 'Liberté + hotspot + vidéo sans y penser' },
-      { id: 'serenite', name: 'Sérénité', desc: 'Aucune contrainte, zéro stress data' },
+      { id:'essentiel', name:'Essentiel', desc:'Usage maîtrisé, Wi-Fi fréquent' },
+      { id:'confort',  name:'Confort',  desc:'Liberté + hotspot + vidéo sans y penser' },
+      { id:'serenite', name:'Sérénité', desc:'Aucune contrainte, zéro stress data' },
     ],
 
-    // Remises Open: VALIDÉES PAR TOI
     mobileOffers: [
-      {
-        id: 'm2h',
-        name: 'Forfait 2h / 100 Mo',
-        commitmentMonths: 0,
-        price: { intro: 8.99, after: null, promoNote: 'Sans engagement (prix indicatif)' },
-        openDiscount: 3,
-        highlights: ['Appels 2h', 'SMS/MMS illimités', '100 Mo']
+      { id:'m2h', name:'Forfait 2h / 100 Mo', commitmentMonths:0, price:{ intro:8.99, after:null, promoNote:'Sans engagement (prix indicatif)' }, openDiscount:3,
+        highlights:['Appels 2h','SMS/MMS illimités','100 Mo']
       },
-      {
-        id: 'm20',
-        name: 'Série Spéciale 20Go',
-        commitmentMonths: 0,
-        price: { intro: 17.99, after: null, promoNote: 'Sans engagement' },
-        openDiscount: 7,
-        highlights: ['Appels/SMS/MMS illimités', '20Go en France (débit réduit au-delà)']
+      { id:'m20', name:'Série Spéciale 20Go', commitmentMonths:0, price:{ intro:17.99, after:null, promoNote:'Sans engagement' }, openDiscount:7,
+        highlights:['Appels/SMS/MMS illimités','20Go en France (débit réduit au-delà)']
       },
-      {
-        id: 'm120',
-        name: 'Série Spéciale 120Go 5G',
-        commitmentMonths: 0,
-        price: { intro: 24.99, after: null, promoNote: 'Promo possible (codes / périodes)' },
-        openDiscount: 5,
-        highlights: ['Appels/SMS/MMS illimités', '120Go 5G (selon conditions)']
+      { id:'m120', name:'Série Spéciale 120Go 5G', commitmentMonths:0, price:{ intro:24.99, after:null, promoNote:'Promo possible (codes / périodes)' }, openDiscount:5,
+        highlights:['Appels/SMS/MMS illimités','120Go 5G (selon conditions)']
       },
-      {
-        id: 'm200',
-        name: 'Forfait 200Go 5G',
-        commitmentMonths: 24,
-        price: { intro: 37.99, after: 47.99, promoNote: 'Engagement 24 mois (prix indicatif)' },
-        openDiscount: 8,
-        highlights: ['Appels/SMS/MMS illimités', '200Go 5G (selon conditions)']
+      { id:'m200', name:'Forfait 200Go 5G', commitmentMonths:24, price:{ intro:37.99, after:47.99, promoNote:'Engagement 24 mois (prix indicatif)' }, openDiscount:8,
+        highlights:['Appels/SMS/MMS illimités','200Go 5G (selon conditions)']
       },
-      {
-        id: 'm300',
-        name: 'Forfait 300Go 5G',
-        commitmentMonths: 24,
-        price: { intro: 44.99, after: 54.99, promoNote: 'Engagement 24 mois (prix indicatif)' },
-        openDiscount: 15,
-        highlights: ['Gros usages', 'Partage de connexion intensif', 'Famille']
+      { id:'m300', name:'Forfait 300Go 5G', commitmentMonths:24, price:{ intro:44.99, after:54.99, promoNote:'Engagement 24 mois (prix indicatif)' }, openDiscount:15,
+        highlights:['Gros usages','Partage de connexion intensif','Famille']
       },
-      {
-        id: 'm500',
-        name: 'Forfait 500Go 5G+',
-        commitmentMonths: 24,
-        price: { intro: 59.99, after: 69.99, promoNote: 'Engagement 24 mois (prix indicatif)' },
-        openDiscount: 15,
-        highlights: ['Premium', 'Multi-appareils', 'Très gros usages']
+      { id:'m500', name:'Forfait 500Go 5G+', commitmentMonths:24, price:{ intro:59.99, after:69.99, promoNote:'Engagement 24 mois (prix indicatif)' }, openDiscount:15,
+        highlights:['Premium','Multi-appareils','Très gros usages']
       },
     ],
 
     options: [
-      { id: 'maison_protegee', name: 'Maison Protégée', when: 'Maison / absences / RDC', script: 'Absences + maison → tranquillité d\'esprit (dissuasion + intervention).' },
-      { id: 'cybersecure', name: 'Cybersecure', when: 'Enfants / télétravail / PC pro', script: 'Ce n\'est pas technique : c\'est protéger la famille et les appareils.' },
-      { id: 'multisim', name: 'Multi-SIM', when: 'Montre / tablette / voiture / hotspot', script: 'Même forfait, plusieurs appareils : montre, tablette, voiture.' },
+      { id:'maison_protegee', name:'Maison Protégée', when:'Maison / absences / RDC', script:'Absences + maison → tranquillité d\'esprit (dissuasion + intervention).' },
+      { id:'cybersecure', name:'Cybersecure', when:'Enfants / télétravail / PC pro', script:'Ce n\'est pas technique : c\'est protéger la famille et les appareils.' },
+      { id:'multisim', name:'Multi-SIM', when:'Montre / tablette / voiture / hotspot', script:'Même forfait, plusieurs appareils : montre, tablette, voiture.' },
     ]
   };
 
-  // ---------------------------
-  // State
-  // ---------------------------
   const DEFAULT_STATE = {
     step: 0,
-    mode: 'client', // 'client' | 'vendeur'
-    hasBox: true,  // Box Orange (déjà ou en souscription) → active remise Open
-    housing: { surface: null, type: null, floors: null, walls: null, boxPlacement: null },
+    mode: 'client',
+    hasBox: true,
+    housing: { surface:null, type:null, floors:null, walls:null, boxPlacement:null },
     internetUsage: [],
     mobileContext: [],
     security: [],
@@ -297,16 +338,13 @@
   let state = null;
 
   const STEPS = [
-    { key: 'housing', title: 'Logement & Wi-Fi', hint: 'On dimensionne la couverture réelle : surface, étages, murs. (Ça évite les retours.)' },
-    { key: 'internet', title: 'Usages Internet', hint: 'On identifie l\'intensité : télétravail, gaming, streaming, famille.' },
-    { key: 'mobile', title: 'Mobile (sans parler de Go)', hint: 'On vend du confort : ne plus surveiller, pouvoir partager, gérer l\'imprévu.' },
-    { key: 'security', title: 'Sécurité & Sérénité', hint: 'Déclencheurs simples : absences, enfants, appareils sensibles.' },
-    { key: 'result', title: 'Résultat', hint: 'Recommandation + justification client + scripts vendeur.' },
+    { key:'housing',  title:'Logement & Wi-Fi', hint:'On dimensionne la couverture réelle : surface, étages, murs. (Ça évite les retours.)' },
+    { key:'internet', title:'Usages Internet', hint:'On identifie l\'intensité : télétravail, gaming, streaming, famille.' },
+    { key:'mobile',   title:'Mobile (sans parler de Go)', hint:'On vend du confort : ne plus surveiller, pouvoir partager, gérer l\'imprévu.' },
+    { key:'security', title:'Sécurité & Sérénité', hint:'Déclencheurs simples : absences, enfants, appareils sensibles.' },
+    { key:'result',   title:'Résultat', hint:'Recommandation + justification client + scripts vendeur.' },
   ];
 
-  // ---------------------------
-  // DOM helpers
-  // ---------------------------
   const $ = (id) => document.getElementById(id);
 
   function safe(id){
@@ -315,11 +353,8 @@
     return el;
   }
 
-  // Clone (fallback si structuredClone absent)
   function deepClone(obj){
-    try{
-      if (typeof structuredClone === 'function') return structuredClone(obj);
-    } catch {}
+    try{ if (typeof structuredClone === 'function') return structuredClone(obj); } catch {}
     return JSON.parse(JSON.stringify(obj));
   }
 
@@ -339,7 +374,6 @@
     if (f >= 2) score += 1;
 
     if (h.walls === 'beton') score += 1;
-
     if (h.boxPlacement === 'excentre') score += 1;
     if (h.boxPlacement === 'garage') score += 2;
 
@@ -378,7 +412,6 @@
     if (c.has('hotspot')) p += 2;
     if (c.has('wifi_unstable')) p += 2;
     if (c.has('zero_stress')) p += 3;
-
     if (p <= 2) return 'essentiel';
     if (p <= 6) return 'confort';
     return 'serenite';
@@ -392,14 +425,15 @@
     let tier = 2;
     if (intensity === 'Moyen' || intensity === 'Élevé') tier = 3;
 
-    const heavy = (u.has('teletravail') && u.has('gaming')) || (u.has('teletravail') && u.has('streaming') && u.has('famille'));
+    const heavy = (u.has('teletravail') && u.has('gaming')) ||
+                  (u.has('teletravail') && u.has('streaming') && u.has('famille'));
     if (heavy) tier = 3;
 
     if (rep >= 2) tier = 4;
 
     const s = Number(state.housing.surface ?? 0);
     if (tier === 2 && intensity === 'Faible' && s > 0 && s < 50 && rep === 0) {
-      return { primary: 'livebox', alternative: 'lite' };
+      return { primary:'livebox', alternative:'lite' };
     }
     return { primary: tier === 4 ? 'max' : 'up', alternative: tier === 4 ? 'up' : 'livebox' };
   }
@@ -413,7 +447,6 @@
     if (sec.has('absences') || sec.has('rdc') || state.housing.type === 'maison') opts.push('maison_protegee');
     if (sec.has('enfants') || sec.has('pc_pro') || u.has('teletravail')) opts.push('cybersecure');
     if (dev.has('watch') || dev.has('tablet') || dev.has('car') || new Set(state.mobileContext).has('hotspot')) opts.push('multisim');
-
     return [...new Set(opts)];
   }
 
@@ -457,15 +490,9 @@
     return 'Très difficile';
   }
 
-  function labelInternet(v){
-    return ({teletravail:'Télétravail', gaming:'Gaming', streaming:'Streaming', famille:'Famille', iot:'Objets connectés'})[v] || v;
-  }
-  function labelMobile(v){
-    return ({gps:'GPS', video:'Vidéos', hotspot:'Hotspot', wifi_unstable:'Wi-Fi instable', zero_stress:'Tranquillité'})[v] || v;
-  }
-  function labelSec(v){
-    return ({absences:'Absences', rdc:'RDC', enfants:'Enfants', pc_pro:'PC pro'})[v] || v;
-  }
+  function labelInternet(v){ return ({teletravail:'Télétravail', gaming:'Gaming', streaming:'Streaming', famille:'Famille', iot:'Objets connectés'})[v] || v; }
+  function labelMobile(v){ return ({gps:'GPS', video:'Vidéos', hotspot:'Hotspot', wifi_unstable:'Wi-Fi instable', zero_stress:'Tranquillité'})[v] || v; }
+  function labelSec(v){ return ({absences:'Absences', rdc:'RDC', enfants:'Enfants', pc_pro:'PC pro'})[v] || v; }
 
   function escapeHtml(s){
     return String(s).replace(/[&<>\"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#39;'}[c]));
@@ -490,9 +517,7 @@
     setTimeout(()=>t.remove(), 1800);
   }
 
-  function euro(n){
-    return `${Number(n).toFixed(2).replace('.', ',')}€`;
-  }
+  function euro(n){ return `${Number(n).toFixed(2).replace('.', ',')}€`; }
 
   function priceLine(o){
     if (!o?.price) return '—';
@@ -500,7 +525,7 @@
     return `${euro(Number(o.price.intro))}/mois (12 mois) puis ${euro(Number(o.price.after))}/mois`;
   }
 
-  // Remise Pack: Livebox Up/Max + forfait mobile => -5€ sur la partie box
+  // Pack: Up/Max + forfait => -5€ sur la box
   function packBoxDiscount(boxOfferId, hasMobile){
     if (!hasMobile) return 0;
     return (boxOfferId === 'up' || boxOfferId === 'max') ? 5 : 0;
@@ -528,14 +553,8 @@
   // ---------------------------
   function buildShareURL(){
     const compact = {
-      s: state.step,
-      m: state.mode,
-      bx: state.hasBox,
-      h: state.housing,
-      iu: state.internetUsage,
-      mc: state.mobileContext,
-      se: state.security,
-      d: state.devices,
+      s: state.step, m: state.mode, bx: state.hasBox,
+      h: state.housing, iu: state.internetUsage, mc: state.mobileContext, se: state.security, d: state.devices
     };
     const payload = btoa(unescape(encodeURIComponent(JSON.stringify(compact))));
     const u = new URL(window.location.href);
@@ -576,7 +595,7 @@
   }
 
   // ---------------------------
-  // UI components
+  // Components
   // ---------------------------
   function badge(text){
     const div = document.createElement('span');
@@ -594,10 +613,8 @@
       btn.className = 'opt' + (selectedValue === opt.value ? ' selected' : '');
       btn.setAttribute('aria-pressed', selectedValue === opt.value ? 'true' : 'false');
       btn.innerHTML = `<div class="t">${opt.label}</div><div class="s">${opt.hint||''}</div>`;
-
       btn.addEventListener('click', (e)=>{ e.preventDefault(); e.stopPropagation(); onChange(opt.value); });
       btn.addEventListener('touchend', (e)=>{ e.preventDefault(); e.stopPropagation(); onChange(opt.value); }, { passive:false });
-
       container.appendChild(btn);
     });
   }
@@ -618,11 +635,9 @@
           <div class="sub">${it.hint || ''}</div>
         </div>
       `;
-
       const fire = (e)=>{ e.preventDefault(); e.stopPropagation(); onToggle(it.value); };
       btn.addEventListener('click', fire);
       btn.addEventListener('touchend', fire, { passive:false });
-
       container.appendChild(btn);
     });
   }
@@ -666,7 +681,6 @@
   // ---------------------------
   function renderHousing(root){
     root.innerHTML = '';
-
     root.insertAdjacentHTML('beforeend', `<div class="q"><label>Surface du logement</label><div class="seg" id="segSurface"></div></div>`);
     setSeg('segSurface', [
       { value: 40, label: '< 50 m²', hint: 'Wi-Fi souvent simple' },
@@ -727,7 +741,6 @@
   function renderMobile(root){
     root.innerHTML = '';
 
-    // Toggle Open
     const openCard = document.createElement('div');
     openCard.className = 'card';
     openCard.innerHTML = `
@@ -735,13 +748,13 @@
         <div class="h2">Avantage Open</div>
         <div class="muted">Active la remise Open si le client a une box Orange (déjà ou en souscription).</div>
         <div class="sp"></div>
-        <button class="btn ${state.hasBox ? 'primary' : ''}" id="btnHasBox" type="button">${state.hasBox ? '✅ Box Orange : OUI (Open actif)' : '⬜ Box Orange : NON (Open inactif)'}</button>
+        <button class="btn ${state.hasBox ? 'primary' : ''}" id="btnHasBox" type="button">
+          ${state.hasBox ? '✅ Box Orange : OUI (Open actif)' : '⬜ Box Orange : NON (Open inactif)'}
+        </button>
       </div>
     `;
     root.appendChild(openCard);
-    setTimeout(()=>{
-      safe('btnHasBox').onclick = () => { state.hasBox = !state.hasBox; persist(); render(); };
-    });
+    setTimeout(()=>{ safe('btnHasBox').onclick = () => { state.hasBox = !state.hasBox; persist(); render(); }; });
 
     root.insertAdjacentHTML('beforeend', `<div class="q"><label>Hors Wi-Fi, qu\'est-ce qui vous arrive souvent ?</label><div class="checklist" id="chkMobile"></div></div>`);
     const selected = new Set(state.mobileContext);
@@ -808,7 +821,6 @@
 
     root.innerHTML = '';
 
-    // Reco internet + comparatif
     const rec = document.createElement('div');
     rec.className = 'rec';
     rec.innerHTML = `
@@ -825,13 +837,13 @@
       </div>
 
       <div style="margin-top:10px; padding:12px; border-radius:16px; border:1px solid var(--border); background: rgba(255,255,255,.03)">
-        <div class="h2" style="margin:0 0 8px">Comparatif rapide (avant / après)</div>
-        <div class="muted" style="margin-bottom:8px">Alternative vs recommandation</div>
+        <div class="h2" style="margin:0 0 8px">Comparatif rapide</div>
+        <div class="muted" style="margin-bottom:8px">Alternative vs recommandation — pour expliquer le “pourquoi” simplement.</div>
         <div style="overflow:auto">
           <table style="width:100%; border-collapse:collapse; font-size:13px">
             <thead>
               <tr>
-                <th style="text-align:left; padding:10px; border-bottom:1px solid var(--border)"> </th>
+                <th style="text-align:left; padding:10px; border-bottom:1px solid var(--border)"></th>
                 <th style="text-align:left; padding:10px; border-bottom:1px solid var(--border)">${escapeHtml(alt.name)}</th>
                 <th style="text-align:left; padding:10px; border-bottom:1px solid var(--border)">${escapeHtml(primary.name)}</th>
               </tr>
@@ -866,7 +878,7 @@
       </div>
 
       <div class="sp"></div>
-      <div class="muted">Alternative (si budget serré / usage plus simple) :</div>
+      <div class="muted">Alternative (si budget plus serré / usage plus simple) :</div>
       <div style="margin-top:6px"><span class="badge"><b>${escapeHtml(alt.name)}</b> — ${escapeHtml(alt.hint)} • ${priceLine(alt)}</span></div>
     `;
     root.appendChild(rec);
@@ -917,7 +929,7 @@
     `;
     root.appendChild(opt);
 
-    // Mode vendeur
+    // Mode vendeur (seul)
     if (state.mode === 'vendeur') {
       const seller = document.createElement('div');
       seller.className = 'seller';
@@ -944,7 +956,7 @@
       safe('btnPrev').onclick = () => { state.step = Math.max(0, state.step-1); persist(); render(); };
       safe('btnCopy').onclick = () => {
         navigator.clipboard?.writeText(buildPlainTextRecap(res, primary, alt, mp, mOffer, opts, packDisc));
-        toast('Récap copié dans le presse-papier.');
+        toast('Récap copié dans le presse-papiers.');
       };
     });
   }
@@ -953,6 +965,7 @@
     const lines = [];
     lines.push('RÉCAP CONFIGURATEUR (V1)');
     lines.push('—');
+    lines.push(`Mode: ${state.mode.toUpperCase()}`);
     lines.push(`Box Orange (Open): ${state.hasBox ? 'OUI' : 'NON'}`);
     lines.push(`Internet conseillé: ${primary.name} (Répéteurs: ${res.rep})`);
     lines.push(`Prix: ${priceLineWithDiscount(primary, packDisc)}${packDisc ? ` (Pack −${packDisc}€/mois)` : ''}`);
@@ -973,19 +986,17 @@
     lines.push('—');
     lines.push(`Options suggérées: ${opts.length ? opts.map(o=>o.name).join(', ') : 'Aucune'}`);
     if (opts.length) opts.forEach(o => lines.push(`- ${o.name}: ${o.script}`));
-
     if (state.mode === 'vendeur') {
       lines.push('—');
       lines.push('Mode vendeur:');
       res.sellerAlerts.forEach(a => lines.push(`- ${a}`));
     }
-
     lines.push('');
     return lines.join('\n');
   }
 
   // ---------------------------
-  // Sidebar & main render
+  // Sidebar actions
   // ---------------------------
   function renderShare(){
     const row = safe('shareRow');
@@ -997,7 +1008,7 @@
     btn.onclick = () => {
       const url = buildShareURL();
       navigator.clipboard?.writeText(url);
-      toast('Lien copié. Colle-le sur le mobile/tablette.');
+      toast('Lien copié. Colle-le sur mobile/tablette.');
     };
 
     const btn2 = document.createElement('button');
@@ -1009,8 +1020,28 @@
     row.appendChild(btn2);
   }
 
+  // ---------------------------
+  // Mode (fix principal)
+  // ---------------------------
+  function updateModeUI(){
+    safe('btnModeClientTop').classList.toggle('primary', state.mode === 'client');
+    safe('btnModeVendeurTop').classList.toggle('primary', state.mode === 'vendeur');
+    safe('btnModeClient').classList.toggle('primary', state.mode === 'client');
+    safe('btnModeVendeur').classList.toggle('primary', state.mode === 'vendeur');
+  }
+
+  function setMode(mode){
+    state.mode = (mode === 'vendeur') ? 'vendeur' : 'client';
+    persist();
+    render();
+  }
+
+  // ---------------------------
+  // Render
+  // ---------------------------
   function render(){
     renderStepper();
+
     const step = STEPS[state.step];
     safe('screenTitle').textContent = step.title;
     safe('screenHint').textContent = step.hint;
@@ -1040,14 +1071,11 @@
     state.mobileContext.forEach(c=>tags.appendChild(badge(`Mobile: ${labelMobile(c)}`)));
     state.security.forEach(s=>tags.appendChild(badge(`Sécurité: ${labelSec(s)}`)));
 
-    safe('btnModeClient').classList.toggle('primary', state.mode === 'client');
-    safe('btnModeVendeur').classList.toggle('primary', state.mode === 'vendeur');
-
     // Sidebar cachée en mode client
-    const side = document.getElementById('sidePanel');
-    if (side) side.style.display = (state.mode === 'vendeur') ? 'grid' : 'none';
+    const side = safe('sidePanel');
+    side.style.display = (state.mode === 'vendeur') ? 'grid' : 'none';
 
-    // Debug uniquement en vendeur
+    // Debug uniquement vendeur
     const dbg = safe('stateDebug');
     if (state.mode === 'vendeur') {
       dbg.style.display = 'block';
@@ -1057,8 +1085,11 @@
       dbg.textContent = '';
     }
 
-    // Le share n'a de sens que côté vendeur (mais pas grave si caché via sidebar)
+    // Share utile surtout en vendeur, mais pas grave si caché avec sidebar
     renderShare();
+
+    // Update mode buttons (top + sidebar)
+    updateModeUI();
   }
 
   // ---------------------------
@@ -1067,11 +1098,15 @@
   function init(){
     state = loadFromURL() || loadLocal() || deepClone(DEFAULT_STATE);
 
+    // Buttons sidebar
     safe('btnReset').onclick = () => { state = deepClone(DEFAULT_STATE); persist(); render(); };
     safe('btnPrint').onclick = () => window.print();
+    safe('btnModeClient').onclick = () => setMode('client');
+    safe('btnModeVendeur').onclick = () => setMode('vendeur');
 
-    safe('btnModeClient').onclick = () => { state.mode = 'client'; persist(); render(); };
-    safe('btnModeVendeur').onclick = () => { state.mode = 'vendeur'; persist(); render(); };
+    // Buttons TOP (fix qui te débloque)
+    safe('btnModeClientTop').onclick = () => setMode('client');
+    safe('btnModeVendeurTop').onclick = () => setMode('vendeur');
 
     render();
   }
