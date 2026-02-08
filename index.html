@@ -112,6 +112,12 @@
       background: linear-gradient(135deg, rgba(255,106,0,.95), rgba(255,138,61,.95));
       transition: width .25s ease;
     }
+    .feedback{
+      margin-top:10px; padding:10px 12px; border-radius:14px;
+      border:1px solid var(--border); background: rgba(255,255,255,.03);
+      display:flex; gap:8px; flex-wrap:wrap; font-size:12px; color:var(--muted)
+    }
+    .feedback span{display:inline-flex; gap:6px; align-items:center}
 
     .stepper{display:flex; gap:8px; align-items:center; flex-wrap:wrap}
     .dot{
@@ -273,6 +279,7 @@
           <div class="progress"><div id="progressFill" style="width:0%"></div></div>
           <div class="h1" id="screenTitle">—</div>
           <div class="muted" id="screenHint" style="margin-top:6px">—</div>
+          <div class="feedback" id="clientFeedback" aria-live="polite"></div>
         </div>
         <div class="bd" id="screen"></div>
       </div>
@@ -391,7 +398,7 @@
   let state = null;
 
   const STEPS = [
-    { key:'housing',  title:'Logement & Wi-Fi', hint:'On dimensionne la couverture réelle : surface, étages, murs. (Ça évite les retours.)' },
+    { key:'housing',  title:'Logement & Wi-Fi', hint:'On dimensionne la couverture réelle : logement, surface, étages, murs. (Moins de mauvaises surprises.)' },
     { key:'internet', title:'Usages Internet', hint:'On identifie l\'intensité : télétravail, gaming, streaming, famille.' },
     { key:'mobile',   title:'Mobile (sans parler de Go)', hint:'On vend du confort : ne plus surveiller, pouvoir partager, gérer l\'imprévu.' },
     { key:'security', title:'Sécurité & Sérénité', hint:'Déclencheurs simples : absences, enfants, appareils sensibles.' },
@@ -734,19 +741,19 @@
   // ---------------------------
   function renderHousing(root){
     root.innerHTML = '';
-    root.insertAdjacentHTML('beforeend', `<div class="q"><label>Surface du logement</label><div class="seg" id="segSurface"></div></div>`);
+    root.insertAdjacentHTML('beforeend', `<div class="q"><label>Vous vivez plutôt en…</label><div class="seg2" id="segType"></div></div>`);
+    setSeg('segType', [
+      { value: 'appart', label: 'Appartement', hint: '' },
+      { value: 'maison', label: 'Maison', hint: '' },
+    ], state.housing.type, (v)=>{ state.housing.type=v; persist(); render(); });
+
+    root.insertAdjacentHTML('beforeend', `<div class="q"><label>Surface approximative <span class="muted">(ex. studio / T2 / maison 4 pièces)</span></label><div class="seg" id="segSurface"></div></div>`);
     setSeg('segSurface', [
       { value: 40, label: '< 50 m²', hint: 'Wi-Fi souvent simple' },
       { value: 70, label: '50–90 m²', hint: 'À surveiller selon murs' },
       { value: 110, label: '90–130 m²', hint: 'Répéteur souvent utile' },
       { value: 150, label: '+ 130 m²', hint: 'Couverture à sécuriser' },
     ], state.housing.surface, (v)=>{ state.housing.surface=v; persist(); render(); });
-
-    root.insertAdjacentHTML('beforeend', `<div class="q"><label>Type de logement</label><div class="seg2" id="segType"></div></div>`);
-    setSeg('segType', [
-      { value: 'appart', label: 'Appartement', hint: '' },
-      { value: 'maison', label: 'Maison', hint: '' },
-    ], state.housing.type, (v)=>{ state.housing.type=v; persist(); render(); });
 
     root.insertAdjacentHTML('beforeend', `<div class="q"><label>Étages</label><div class="seg" id="segFloors"></div></div>`);
     setSeg('segFloors', [
@@ -762,7 +769,7 @@
       { value: 'beton', label: 'Béton / pierre', hint: 'Atténuation forte' },
     ], state.housing.walls, (v)=>{ state.housing.walls=v; persist(); render(); });
 
-    root.insertAdjacentHTML('beforeend', `<div class="q"><label>Emplacement probable de la box</label><div class="seg" id="segPlace"></div></div>`);
+    root.insertAdjacentHTML('beforeend', `<div class="q"><label>Emplacement probable de la box <span class="muted">(salon / entrée / garage)</span></label><div class="seg" id="segPlace"></div></div>`);
     setSeg('segPlace', [
       { value: 'central', label: 'Central', hint: 'Meilleur scénario' },
       { value: 'excentre', label: 'Excentré', hint: 'Couverture à surveiller' },
@@ -809,7 +816,7 @@
     root.appendChild(openCard);
     setTimeout(()=>{ safe('btnHasBox').onclick = () => { state.hasBox = !state.hasBox; persist(); render(); }; });
 
-    root.insertAdjacentHTML('beforeend', `<div class="q"><label>Hors Wi-Fi, qu\'est-ce qui vous arrive souvent ?</label><div class="checklist" id="chkMobile"></div></div>`);
+    root.insertAdjacentHTML('beforeend', `<div class="q"><label>Hors Wi-Fi, dans ces situations, lesquelles vous arrivent ?</label><div class="checklist" id="chkMobile"></div></div>`);
     const selected = new Set(state.mobileContext);
     setChecks('chkMobile', [
       { value: 'gps', label: 'GPS / voiture', hint: 'Trafic temps réel + itinéraires' },
@@ -840,7 +847,7 @@
 
   function renderSecurity(root){
     root.innerHTML = '';
-    root.insertAdjacentHTML('beforeend', `<div class="q"><label>Contexte sécurité (plusieurs choix)</label><div class="checklist" id="chkSec"></div></div>`);
+    root.insertAdjacentHTML('beforeend', `<div class="q"><label>Ce que vous souhaitez protéger (plusieurs choix)</label><div class="checklist" id="chkSec"></div></div>`);
     const selected = new Set(state.security);
     setChecks('chkSec', [
       { value: 'absences', label: 'Absences fréquentes', hint: 'Travail, vacances, déplacements' },
@@ -1126,6 +1133,14 @@
     state.internetUsage.forEach(u=>tags.appendChild(badge(`Internet: ${labelInternet(u)}`)));
     state.mobileContext.forEach(c=>tags.appendChild(badge(`Mobile: ${labelMobile(c)}`)));
     state.security.forEach(s=>tags.appendChild(badge(`Sécurité: ${labelSec(s)}`)));
+
+    const feedback = safe('clientFeedback');
+    feedback.innerHTML = `
+      <span>📶 Wi‑Fi : <b>${scoreLabel(res.wifiScore)}</b></span>
+      <span>📡 Répéteurs : <b>${res.rep}</b></span>
+      <span>⚡️ Internet : <b>${res.intensity}</b></span>
+      <span>📱 Mobile : <b>${mp ? mp.name : '—'}</b></span>
+    `;
 
     // Sidebar cachée en mode client
     const side = safe('sidePanel');
