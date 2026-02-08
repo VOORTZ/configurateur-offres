@@ -393,6 +393,7 @@
     mobileContext: [],
     security: [],
     devices: [],
+    subStep: { housing:0, internet:0, mobile:0, security:0, result:0 },
   };
 
   let state = null;
@@ -711,8 +712,8 @@
       btn.className = 'dot' + (i === state.step ? ' active' : (i < state.step ? ' done' : ''));
       btn.textContent = (i+1);
       btn.title = s.title;
-      btn.addEventListener('click', (e)=>{ e.preventDefault(); state.step = i; persist(); render(); });
-      btn.addEventListener('touchend', (e)=>{ e.preventDefault(); state.step = i; persist(); render(); }, { passive:false });
+      btn.addEventListener('click', (e)=>{ e.preventDefault(); state.step = i; state.subStep[s.key] = 0; persist(); render(); });
+      btn.addEventListener('touchend', (e)=>{ e.preventDefault(); state.step = i; state.subStep[s.key] = 0; persist(); render(); }, { passive:false });
       el.appendChild(btn);
       if (i < STEPS.length-1) {
         const line = document.createElement('div');
@@ -722,16 +723,42 @@
     });
   }
 
-  function navButtons(nextLabel='Suivant'){
+  function questionCount(key){
+    return ({ housing:5, internet:1, mobile:3, security:1, result:1 })[key] || 1;
+  }
+
+  function questionNav(stepKey, total, finalLabel='Suivant'){
     const nav = document.createElement('div');
+    const idx = state.subStep[stepKey] || 0;
     nav.className = 'btnbar';
     nav.innerHTML = `
-      <button class="btn" id="btnPrev" type="button" ${state.step===0?'disabled':''}>Retour</button>
-      <button class="btn primary" id="btnNext" type="button">${nextLabel}</button>
+      <button class="btn" id="btnPrev" type="button" ${(state.step===0 && idx===0)?'disabled':''}>Retour</button>
+      <button class="btn primary" id="btnNext" type="button">${finalLabel}</button>
     `;
     setTimeout(()=>{
-      safe('btnPrev').onclick = () => { state.step = Math.max(0, state.step-1); persist(); render(); };
-      safe('btnNext').onclick = () => { state.step = Math.min(STEPS.length-1, state.step+1); persist(); render(); };
+      safe('btnPrev').onclick = () => {
+        const idx = state.subStep[stepKey] || 0;
+        if (idx > 0) {
+          state.subStep[stepKey] = idx - 1;
+        } else {
+          const prevStep = Math.max(0, state.step - 1);
+          state.step = prevStep;
+          const prevKey = STEPS[prevStep].key;
+          state.subStep[prevKey] = questionCount(prevKey) - 1;
+        }
+        persist(); render();
+      };
+      safe('btnNext').onclick = () => {
+        const idx = state.subStep[stepKey] || 0;
+        if (idx < total - 1) {
+          state.subStep[stepKey] = idx + 1;
+        } else {
+          state.step = Math.min(STEPS.length-1, state.step+1);
+          const nextKey = STEPS[state.step].key;
+          state.subStep[nextKey] = 0;
+        }
+        persist(); render();
+      };
     });
     return nav;
   }
@@ -859,8 +886,7 @@
       state.security = [...selected];
       persist(); render();
     });
-
-    root.appendChild(navButtons('Voir le résultat'));
+    root.appendChild(questionNav('security', 1, 'Voir le résultat'));
   }
 
   function renderResult(root){
@@ -1013,7 +1039,12 @@
     root.appendChild(nav);
 
     setTimeout(()=>{
-      safe('btnPrev').onclick = () => { state.step = Math.max(0, state.step-1); persist(); render(); };
+      safe('btnPrev').onclick = () => {
+        state.step = Math.max(0, state.step-1);
+        const prevKey = STEPS[state.step].key;
+        state.subStep[prevKey] = questionCount(prevKey) - 1;
+        persist(); render();
+      };
       safe('btnCopy').onclick = () => {
         navigator.clipboard?.writeText(buildPlainTextRecap(res, primary, alt, mp, mOffer, opts, packDisc));
         toast('Récap copié dans le presse-papiers.');
@@ -1168,6 +1199,7 @@
   // ---------------------------
   function init(){
     state = loadFromURL() || loadLocal() || deepClone(DEFAULT_STATE);
+    if (!state.subStep) state.subStep = deepClone(DEFAULT_STATE.subStep);
 
     // Buttons sidebar
     safe('btnReset').onclick = () => { state = deepClone(DEFAULT_STATE); persist(); render(); };
