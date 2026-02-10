@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Configurateur Offres — Boutique</title>
+  <title>Configurateur Offres (V1) — Prototype</title>
   <style>
     :root{
       --bg:#0b0f14; --card:#111826; --muted:#93a4b8; --text:#e7eef8;
@@ -210,9 +210,6 @@
 
     .seller{padding:14px; border-radius:18px; border:1px solid rgba(45,212,191,.35); background: rgba(45,212,191,.08)}
     .seller .big{font-size:14px; font-weight:900; color:var(--text)}
-    .ai{padding:12px; border-radius:14px; border:1px solid rgba(255,138,61,.35); background: rgba(255,138,61,.08)}
-    .ai .big{font-size:13px; font-weight:900; color:var(--text)}
-    .ai ul{margin:8px 0 0; padding-left:18px; color:var(--muted); font-size:12px}
 
     .mono{
       font-family: ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono",monospace;
@@ -238,13 +235,13 @@
       <div class="brand">
         <div class="logo" aria-hidden="true"></div>
         <div>
-          <div class="title">Configurateur Offres — Boutique Orange</div>
-          <div class="subtitle">Parcours simple pour recommander l'offre la plus adaptée.</div>
+          <div class="title">Configurateur Offres — Prototype V1</div>
+          <div class="subtitle">Diagnostic usages (Wi-Fi / Internet / Mobile / Sécurité) → recommandation + scripts vendeur</div>
         </div>
       </div>
 
-      <div class="pill" title="Sans données personnelles, utilisable sur tablette">
-        <span>🟠</span> <span>Tablette • 5 étapes • sans donnée perso</span>
+      <div class="pill" title="V1: sans données personnelles, utilisable sur tablette">
+        <span>🟠</span> <span>V1 • 5 écrans • sans RGPD lourd</span>
         <span style="opacity:.5">|</span>
         <div class="modebar" aria-label="Mode">
           <button class="modebtn" id="btnModeClientTop" type="button">Mode client</button>
@@ -255,12 +252,12 @@
 
     <div class="hero">
       <div class="hero-card">
-        <div class="hero-title">Un parcours clair en 2 minutes</div>
-        <div class="hero-sub">Une question à la fois, une recommandation claire à la fin.</div>
+        <div class="hero-title">Un parcours client fluide en 2 minutes</div>
+        <div class="hero-sub">Quelques réponses rapides → une recommandation claire, compréhensible et rassurante.</div>
         <div class="hero-kpis">
-          <span>⚡ Simple</span>
-          <span>🧭 Guidé</span>
-          <span>🧩 Efficace</span>
+          <span>⚡️ Moins de questions, plus d'impact</span>
+          <span>🧭 Recommandation justifiée</span>
+          <span>🧩 Compatible tablette</span>
         </div>
       </div>
       <div class="hero-card">
@@ -278,7 +275,7 @@
           <div class="sp"></div>
           <div class="stepmeta">
             <span id="stepCount">Étape —</span>
-            <span>Répondez simplement, sans réfléchir longtemps</span>
+            <span>Conseil client : répondre franchement</span>
           </div>
           <div class="progress"><div id="progressFill" style="width:0%"></div></div>
           <div class="h1" id="screenTitle">—</div>
@@ -301,11 +298,6 @@
             </div>
             <div class="sp"></div>
             <div class="row" id="tags"></div>
-            <div class="sp"></div>
-            <div class="ai" id="aiInsights">
-              <div class="big">IA live</div>
-              <div class="muted">En attente de réponses…</div>
-            </div>
           </div>
         </div>
 
@@ -331,7 +323,7 @@
 
 <script>
   // ===========================
-  // Configurateur Offres — Boutique
+  // Configurateur Offres — Prototype V1
   // 1 fichier, sans dépendance
   // ===========================
 
@@ -406,14 +398,13 @@
   };
 
   let state = null;
-  let navButtons = null; // compatibilité: évite l'erreur "navButtons is not defined"
 
   const STEPS = [
-    { key:'housing',  title:'Logement & Wi-Fi', hint:'Comprendre la couverture à prévoir.' },
-    { key:'internet', title:'Usages Internet', hint:'Mesurer le niveau de besoin.' },
-    { key:'mobile',   title:'Usage Mobile', hint:'Évaluer le confort attendu.' },
-    { key:'security', title:'Sécurité', hint:'Identifier les priorités de protection.' },
-    { key:'result',   title:'Recommandation', hint:'Une proposition claire et assumée.' },
+    { key:'housing',  title:'Logement & Wi-Fi', hint:'On dimensionne la couverture réelle : logement, surface, étages, murs. (Moins de mauvaises surprises.)' },
+    { key:'internet', title:'Usages Internet', hint:'On identifie l\'intensité : télétravail, gaming, streaming, famille.' },
+    { key:'mobile',   title:'Mobile (sans parler de Go)', hint:'On vend du confort : ne plus surveiller, pouvoir partager, gérer l\'imprévu.' },
+    { key:'security', title:'Sécurité & Sérénité', hint:'Déclencheurs simples : absences, enfants, appareils sensibles.' },
+    { key:'result',   title:'Résultat', hint:'Recommandation + justification client + scripts vendeur.' },
   ];
 
   const SUBSTEP_TOTALS = { housing:5, internet:1, mobile:3, security:1, result:1 };
@@ -499,18 +490,18 @@
     const intensity = internetIntensity(state.internetUsage);
     const u = new Set(state.internetUsage);
 
-    let tier = 3;
-    if (intensity === 'Élevé') tier = 4;
+    let tier = 2;
+    if (intensity === 'Moyen' || intensity === 'Élevé') tier = 3;
 
     const heavy = (u.has('teletravail') && u.has('gaming')) ||
                   (u.has('teletravail') && u.has('streaming') && u.has('famille'));
-    if (heavy) tier = 4;
+    if (heavy) tier = 3;
 
-    if (rep >= 1) tier = Math.max(tier, 4);
+    if (rep >= 2) tier = 4;
 
     const s = Number(state.housing.surface ?? 0);
-    if (intensity === 'Faible' && s > 0 && s < 50 && rep === 0) {
-      return { primary:'up', alternative:'livebox' };
+    if (tier === 2 && intensity === 'Faible' && s > 0 && s < 50 && rep === 0) {
+      return { primary:'livebox', alternative:'lite' };
     }
     return { primary: tier === 4 ? 'max' : 'up', alternative: tier === 4 ? 'up' : 'livebox' };
   }
@@ -555,36 +546,6 @@
     if (mp !== 'essentiel') sellerAlerts.push('💡 Script : « Ce forfait n\'est pas pour consommer plus, c\'est pour ne jamais faire attention. »');
 
     return { wifiScore, rep, intensity, mobileProfile: mp, primaryBox: primary, altBox: alternative, options, reasons, sellerAlerts };
-  }
-
-  function buildLiveInsights(){
-    const explicit = [];
-    const implicit = [];
-    const questionsToAsk = [];
-
-    if (state.internetUsage.includes('teletravail')) explicit.push('Besoin de stabilité pro');
-    if (state.internetUsage.includes('streaming') || state.internetUsage.includes('famille')) explicit.push('Besoin de capacité simultanée');
-    if (state.mobileContext.includes('zero_stress')) explicit.push('Besoin de confort sans surveillance');
-
-    const rep = recommendedRepeaters(state.housing);
-    if (rep >= 1 && !state.internetUsage.includes('famille')) {
-      implicit.push({ need:'Couverture homogène dans tout le logement', confidence:'élevée' });
-      questionsToAsk.push('Qui utilise le Wi‑Fi en même temps à la maison ?');
-    }
-    if (state.mobileContext.includes('hotspot') || state.mobileContext.includes('wifi_unstable')) {
-      implicit.push({ need:'Continuité internet hors Wi‑Fi (travail/loisirs)', confidence:'élevée' });
-      questionsToAsk.push('En déplacement, quelle gêne revient le plus souvent ?');
-    }
-    if (state.security.length === 0 && (state.housing.type === 'maison' || state.housing.floors >= 1)) {
-      implicit.push({ need:'Réassurance sécurité du foyer', confidence:'moyenne' });
-      questionsToAsk.push('Souhaitez-vous protéger le foyer pendant vos absences ?');
-    }
-
-    return {
-      explicit: [...new Set(explicit)],
-      implicit,
-      questionsToAsk: [...new Set(questionsToAsk)].slice(0, 3),
-    };
   }
 
   // ---------------------------
@@ -770,90 +731,43 @@
   }
 
   function questionCount(key){
-    return SUBSTEP_TOTALS[key] || 1;
-  }
-
-  function validationMessage(stepKey, idx){
-    if (stepKey === 'housing' && idx === 0 && !state.housing.type) return 'Choisissez le type de logement pour continuer.';
-    if (stepKey === 'housing' && idx === 1 && state.housing.surface == null) return 'Sélectionnez une surface approximative.';
-    if (stepKey === 'housing' && idx === 2 && state.housing.floors == null) return 'Indiquez le nombre d\'étages.';
-    if (stepKey === 'housing' && idx === 3 && !state.housing.walls) return 'Choisissez le type de murs majoritaire.';
-    if (stepKey === 'housing' && idx === 4 && !state.housing.boxPlacement) return 'Précisez l\'emplacement probable de la box.';
-    if (stepKey === 'internet' && state.internetUsage.length === 0) return 'Sélectionnez au moins un usage internet.';
-    if (stepKey === 'mobile' && idx === 1 && state.mobileContext.length === 0) return 'Sélectionnez au moins une situation mobile.';
-    if (stepKey === 'security' && state.security.length === 0) return 'Sélectionnez au moins un besoin de protection.';
-    return '';
+    return ({ housing:5, internet:1, mobile:3, security:1, result:1 })[key] || 1;
   }
 
   function questionNav(stepKey, total, finalLabel='Suivant'){
     const nav = document.createElement('div');
     const idx = state.subStep[stepKey] || 0;
-    const isLastQuestion = idx >= total - 1;
-    const message = validationMessage(stepKey, idx);
     nav.className = 'btnbar';
     nav.innerHTML = `
-      <button class="btn" data-nav="prev" type="button" ${(state.step===0 && idx===0)?'disabled':''}>Retour</button>
-      <button class="btn primary" data-nav="next" type="button" ${message ? 'disabled' : ''}>${isLastQuestion ? finalLabel : 'Continuer'}</button>
+      <button class="btn" id="btnPrev" type="button" ${(state.step===0 && idx===0)?'disabled':''}>Retour</button>
+      <button class="btn primary" id="btnNext" type="button">${finalLabel}</button>
     `;
-    if (message) nav.insertAdjacentHTML('beforeend', `<div class="btnhint">${message}</div>`);
-
-    const prevBtn = nav.querySelector('[data-nav="prev"]');
-    const nextBtn = nav.querySelector('[data-nav="next"]');
-
-    prevBtn.onclick = () => {
-      const subStepIndex = state.subStep[stepKey] || 0;
-      if (subStepIndex > 0) {
-        state.subStep[stepKey] = subStepIndex - 1;
-      } else {
-        const prevStep = Math.max(0, state.step - 1);
-        state.step = prevStep;
-        const prevKey = STEPS[prevStep].key;
-        state.subStep[prevKey] = questionCount(prevKey) - 1;
-      }
-      persist(); render();
-    };
-
-    nextBtn.onclick = () => {
-      if (message) return;
-      const subStepIndex = state.subStep[stepKey] || 0;
-      if (subStepIndex < total - 1) {
-        state.subStep[stepKey] = subStepIndex + 1;
-      } else {
-        state.step = Math.min(STEPS.length-1, state.step+1);
-        const nextKey = STEPS[state.step].key;
-        state.subStep[nextKey] = 0;
-      }
-      persist(); render();
-    };
-
-    return nav;
-  }
-
-  function normalizeState(raw){
-    const normalized = deepClone(DEFAULT_STATE);
-    if (!raw || typeof raw !== 'object') return normalized;
-
-    normalized.step = clamp(Number(raw.step ?? 0) || 0, 0, STEPS.length - 1);
-    normalized.mode = raw.mode === 'vendeur' ? 'vendeur' : 'client';
-    normalized.hasBox = raw.hasBox !== false;
-
-    normalized.housing.type = ['appart','maison'].includes(raw.housing?.type) ? raw.housing.type : null;
-    normalized.housing.surface = [40,70,110,150].includes(Number(raw.housing?.surface)) ? Number(raw.housing.surface) : null;
-    normalized.housing.floors = [0,1,2,3].includes(Number(raw.housing?.floors)) ? Number(raw.housing.floors) : null;
-    normalized.housing.walls = ['placo','beton'].includes(raw.housing?.walls) ? raw.housing.walls : null;
-    normalized.housing.boxPlacement = ['central','excentre','garage','inconnu'].includes(raw.housing?.boxPlacement) ? raw.housing.boxPlacement : null;
-
-    normalized.internetUsage = (Array.isArray(raw.internetUsage) ? raw.internetUsage : []).filter(v => ['teletravail','gaming','streaming','famille','iot'].includes(v));
-    normalized.mobileContext = (Array.isArray(raw.mobileContext) ? raw.mobileContext : []).filter(v => ['gps','video','hotspot','wifi_unstable','zero_stress'].includes(v));
-    normalized.security = (Array.isArray(raw.security) ? raw.security : []).filter(v => ['absences','rdc','enfants','pc_pro'].includes(v));
-    normalized.devices = (Array.isArray(raw.devices) ? raw.devices : []).filter(v => ['watch','tablet','car'].includes(v));
-
-    const rawSubStep = raw.subStep || {};
-    Object.keys(SUBSTEP_TOTALS).forEach((key) => {
-      normalized.subStep[key] = clamp(Number(rawSubStep[key] ?? 0) || 0, 0, questionCount(key) - 1);
+    setTimeout(()=>{
+      safe('btnPrev').onclick = () => {
+        const idx = state.subStep[stepKey] || 0;
+        if (idx > 0) {
+          state.subStep[stepKey] = idx - 1;
+        } else {
+          const prevStep = Math.max(0, state.step - 1);
+          state.step = prevStep;
+          const prevKey = STEPS[prevStep].key;
+          state.subStep[prevKey] = questionCount(prevKey) - 1;
+        }
+        persist(); render();
+      };
+      safe('btnNext').onclick = () => {
+        const idx = state.subStep[stepKey] || 0;
+        if (idx < total - 1) {
+          state.subStep[stepKey] = idx + 1;
+        } else {
+          state.step = Math.min(STEPS.length-1, state.step+1);
+          const nextKey = STEPS[state.step].key;
+          state.subStep[nextKey] = 0;
+        }
+        persist(); render();
+      };
     });
-
-    return normalized;
+    return nav;
   }
 
   // ---------------------------
@@ -861,58 +775,48 @@
   // ---------------------------
   function renderHousing(root){
     root.innerHTML = '';
-    const questions = [
-      () => {
-        root.insertAdjacentHTML('beforeend', `<div class="q"><label>Type de logement</label><div class="seg2" id="segType"></div></div>`);
-        setSeg('segType', [
-          { value: 'appart', label: 'Appartement', hint: '' },
-          { value: 'maison', label: 'Maison', hint: '' },
-        ], state.housing.type, (v)=>{ state.housing.type=v; persist(); render(); });
-      },
-      () => {
-        root.insertAdjacentHTML('beforeend', `<div class="q"><label>Surface approximative</label><div class="seg" id="segSurface"></div></div>`);
-        setSeg('segSurface', [
-          { value: 40, label: '< 50 m²', hint: 'Wi-Fi souvent simple' },
-          { value: 70, label: '50–90 m²', hint: 'À surveiller selon murs' },
-          { value: 110, label: '90–130 m²', hint: 'Répéteur souvent utile' },
-          { value: 150, label: '+ 130 m²', hint: 'Couverture à sécuriser' },
-        ], state.housing.surface, (v)=>{ state.housing.surface=v; persist(); render(); });
-      },
-      () => {
-        root.insertAdjacentHTML('beforeend', `<div class="q"><label>Étages</label><div class="seg" id="segFloors"></div></div>`);
-        setSeg('segFloors', [
-          { value: 0, label: '0', hint: 'Plain pied / même niveau' },
-          { value: 1, label: '1', hint: 'Wi-Fi à l\'étage' },
-          { value: 2, label: '2+', hint: 'Couverture plus difficile' },
-          { value: 3, label: '3+', hint: 'Cas exigeant' },
-        ], state.housing.floors, (v)=>{ state.housing.floors=v; persist(); render(); });
-      },
-      () => {
-        root.insertAdjacentHTML('beforeend', `<div class="q"><label>Murs majoritaires</label><div class="seg2" id="segWalls"></div></div>`);
-        setSeg('segWalls', [
-          { value: 'placo', label: 'Placoplâtre', hint: 'Diffusion OK' },
-          { value: 'beton', label: 'Béton / pierre', hint: 'Atténuation forte' },
-        ], state.housing.walls, (v)=>{ state.housing.walls=v; persist(); render(); });
-      },
-      () => {
-        root.insertAdjacentHTML('beforeend', `<div class="q"><label>Emplacement de la box</label><div class="seg" id="segPlace"></div></div>`);
-        setSeg('segPlace', [
-          { value: 'central', label: 'Central', hint: 'Meilleur scénario' },
-          { value: 'excentre', label: 'Excentré', hint: 'Couverture à surveiller' },
-          { value: 'garage', label: 'Garage / local', hint: 'Propagation difficile' },
-          { value: 'inconnu', label: 'Je ne sais pas', hint: '' },
-        ], state.housing.boxPlacement, (v)=>{ state.housing.boxPlacement=v; persist(); render(); });
-      },
-    ];
+    root.insertAdjacentHTML('beforeend', `<div class="q"><label>Vous vivez plutôt en…</label><div class="seg2" id="segType"></div></div>`);
+    setSeg('segType', [
+      { value: 'appart', label: 'Appartement', hint: '' },
+      { value: 'maison', label: 'Maison', hint: '' },
+    ], state.housing.type, (v)=>{ state.housing.type=v; persist(); render(); });
 
-    const idx = state.subStep.housing || 0;
-    questions[Math.min(idx, questions.length - 1)]();
-    root.appendChild(questionNav('housing', questions.length));
+    root.insertAdjacentHTML('beforeend', `<div class="q"><label>Surface approximative <span class="muted">(ex. studio / T2 / maison 4 pièces)</span></label><div class="seg" id="segSurface"></div></div>`);
+    setSeg('segSurface', [
+      { value: 40, label: '< 50 m²', hint: 'Wi-Fi souvent simple' },
+      { value: 70, label: '50–90 m²', hint: 'À surveiller selon murs' },
+      { value: 110, label: '90–130 m²', hint: 'Répéteur souvent utile' },
+      { value: 150, label: '+ 130 m²', hint: 'Couverture à sécuriser' },
+    ], state.housing.surface, (v)=>{ state.housing.surface=v; persist(); render(); });
+
+    root.insertAdjacentHTML('beforeend', `<div class="q"><label>Étages</label><div class="seg" id="segFloors"></div></div>`);
+    setSeg('segFloors', [
+      { value: 0, label: '0', hint: 'Plain pied / même niveau' },
+      { value: 1, label: '1', hint: 'Wi-Fi à l\'étage' },
+      { value: 2, label: '2+', hint: 'Couverture plus difficile' },
+      { value: 3, label: '3+', hint: 'Cas exigeant' },
+    ], state.housing.floors, (v)=>{ state.housing.floors=v; persist(); render(); });
+
+    root.insertAdjacentHTML('beforeend', `<div class="q"><label>Murs majoritaires</label><div class="seg2" id="segWalls"></div></div>`);
+    setSeg('segWalls', [
+      { value: 'placo', label: 'Placoplâtre', hint: 'Diffusion OK' },
+      { value: 'beton', label: 'Béton / pierre', hint: 'Atténuation forte' },
+    ], state.housing.walls, (v)=>{ state.housing.walls=v; persist(); render(); });
+
+    root.insertAdjacentHTML('beforeend', `<div class="q"><label>Emplacement probable de la box <span class="muted">(salon / entrée / garage)</span></label><div class="seg" id="segPlace"></div></div>`);
+    setSeg('segPlace', [
+      { value: 'central', label: 'Central', hint: 'Meilleur scénario' },
+      { value: 'excentre', label: 'Excentré', hint: 'Couverture à surveiller' },
+      { value: 'garage', label: 'Garage / local', hint: 'Propagation difficile' },
+      { value: 'inconnu', label: 'Je ne sais pas', hint: '' },
+    ], state.housing.boxPlacement, (v)=>{ state.housing.boxPlacement=v; persist(); render(); });
+
+    root.appendChild(navButtons());
   }
 
   function renderInternet(root){
     root.innerHTML = '';
-    root.insertAdjacentHTML('beforeend', `<div class="q"><label>Vos usages Internet (plusieurs choix)</label><div class="checklist" id="chkInternet"></div></div>`);
+    root.insertAdjacentHTML('beforeend', `<div class="q"><label>Usages Internet (plusieurs choix)</label><div class="checklist" id="chkInternet"></div></div>`);
     const selected = new Set(state.internetUsage);
     setChecks('chkInternet', [
       { value: 'teletravail', label: 'Télétravail / visio', hint: 'Stabilité + upload' },
@@ -925,66 +829,59 @@
       state.internetUsage = [...selected];
       persist(); render();
     });
-    root.appendChild(questionNav('internet', 1));
+    root.appendChild(navButtons());
   }
 
   function renderMobile(root){
     root.innerHTML = '';
-    const questions = [
-      () => {
-        const openCard = document.createElement('div');
-        openCard.className = 'card';
-        openCard.innerHTML = `
-          <div class="bd">
-            <div class="h2">Open</div>
-            <div class="muted">Le client a une box Orange ?</div>
-            <div class="sp"></div>
-            <button class="btn ${state.hasBox ? 'primary' : ''}" id="btnHasBox" type="button">
-              ${state.hasBox ? '✅ Box Orange : OUI (Open actif)' : '⬜ Box Orange : NON (Open inactif)'}
-            </button>
-          </div>
-        `;
-        root.appendChild(openCard);
-        setTimeout(()=>{ safe('btnHasBox').onclick = () => { state.hasBox = !state.hasBox; persist(); render(); }; });
-      },
-      () => {
-        root.insertAdjacentHTML('beforeend', `<div class="q"><label>Hors Wi‑Fi, quelles situations arrivent ?</label><div class="checklist" id="chkMobile"></div></div>`);
-        const selected = new Set(state.mobileContext);
-        setChecks('chkMobile', [
-          { value: 'gps', label: 'GPS / voiture', hint: 'Trafic temps réel + itinéraires' },
-          { value: 'video', label: 'Vidéos / réseaux sociaux', hint: 'Vidéo auto → conso invisible' },
-          { value: 'hotspot', label: 'Partage de connexion', hint: 'PC / tablette → ça monte vite' },
-          { value: 'wifi_unstable', label: 'Wi-Fi parfois indisponible', hint: 'Imprévus / déplacements' },
-          { value: 'zero_stress', label: 'Je veux être tranquille', hint: 'Zéro surveillance' },
-        ], selected, (v)=>{
-          if (selected.has(v)) selected.delete(v); else selected.add(v);
-          state.mobileContext = [...selected];
-          persist(); render();
-        });
-      },
-      () => {
-        root.insertAdjacentHTML('beforeend', `<div class="q"><label>Appareils concernés</label><div class="checklist" id="chkDevices"></div></div>`);
-        const dev = new Set(state.devices);
-        setChecks('chkDevices', [
-          { value: 'watch', label: 'Montre connectée (eSIM)', hint: 'Multi-SIM pertinente' },
-          { value: 'tablet', label: 'Tablette', hint: 'Multi-SIM / data dédiée' },
-          { value: 'car', label: 'Voiture / routeur', hint: 'Connexion embarquée' },
-        ], dev, (v)=>{
-          if (dev.has(v)) dev.delete(v); else dev.add(v);
-          state.devices = [...dev];
-          persist(); render();
-        });
-      },
-    ];
 
-    const idx = state.subStep.mobile || 0;
-    questions[Math.min(idx, questions.length - 1)]();
-    root.appendChild(questionNav('mobile', questions.length));
+    const openCard = document.createElement('div');
+    openCard.className = 'card';
+    openCard.innerHTML = `
+      <div class="bd">
+        <div class="h2">Avantage Open</div>
+        <div class="muted">Active la remise Open si le client a une box Orange (déjà ou en souscription).</div>
+        <div class="sp"></div>
+        <button class="btn ${state.hasBox ? 'primary' : ''}" id="btnHasBox" type="button">
+          ${state.hasBox ? '✅ Box Orange : OUI (Open actif)' : '⬜ Box Orange : NON (Open inactif)'}
+        </button>
+      </div>
+    `;
+    root.appendChild(openCard);
+    setTimeout(()=>{ safe('btnHasBox').onclick = () => { state.hasBox = !state.hasBox; persist(); render(); }; });
+
+    root.insertAdjacentHTML('beforeend', `<div class="q"><label>Hors Wi-Fi, dans ces situations, lesquelles vous arrivent ?</label><div class="checklist" id="chkMobile"></div></div>`);
+    const selected = new Set(state.mobileContext);
+    setChecks('chkMobile', [
+      { value: 'gps', label: 'GPS / voiture', hint: 'Trafic temps réel + itinéraires' },
+      { value: 'video', label: 'Vidéos / réseaux sociaux', hint: 'Vidéo auto → conso invisible' },
+      { value: 'hotspot', label: 'Partage de connexion', hint: 'PC / tablette → ça monte vite' },
+      { value: 'wifi_unstable', label: 'Wi-Fi parfois indisponible', hint: 'Imprévus / déplacements' },
+      { value: 'zero_stress', label: 'Je veux être tranquille', hint: 'Zéro surveillance' },
+    ], selected, (v)=>{
+      if (selected.has(v)) selected.delete(v); else selected.add(v);
+      state.mobileContext = [...selected];
+      persist(); render();
+    });
+
+    root.insertAdjacentHTML('beforeend', `<div class="q"><label>Appareils concernés</label><div class="checklist" id="chkDevices"></div></div>`);
+    const dev = new Set(state.devices);
+    setChecks('chkDevices', [
+      { value: 'watch', label: 'Montre connectée (eSIM)', hint: 'Multi-SIM pertinente' },
+      { value: 'tablet', label: 'Tablette', hint: 'Multi-SIM / data dédiée' },
+      { value: 'car', label: 'Voiture / routeur', hint: 'Connexion embarquée' },
+    ], dev, (v)=>{
+      if (dev.has(v)) dev.delete(v); else dev.add(v);
+      state.devices = [...dev];
+      persist(); render();
+    });
+
+    root.appendChild(navButtons());
   }
 
   function renderSecurity(root){
     root.innerHTML = '';
-    root.insertAdjacentHTML('beforeend', `<div class="q"><label>À protéger en priorité (plusieurs choix)</label><div class="checklist" id="chkSec"></div></div>`);
+    root.insertAdjacentHTML('beforeend', `<div class="q"><label>Ce que vous souhaitez protéger (plusieurs choix)</label><div class="checklist" id="chkSec"></div></div>`);
     const selected = new Set(state.security);
     setChecks('chkSec', [
       { value: 'absences', label: 'Absences fréquentes', hint: 'Travail, vacances, déplacements' },
@@ -1020,11 +917,11 @@
     const rec = document.createElement('div');
     rec.className = 'rec';
     rec.innerHTML = `
-      <div class="big">Offre internet recommandée</div>
+      <div class="big">Offre internet conseillée</div>
       <div style="display:flex; justify-content:space-between; gap:12px; margin-top:8px; flex-wrap:wrap">
         <div>
           <div class="big" style="font-size:18px">${escapeHtml(primary.name)}</div>
-          <div class="muted" style="margin-top:4px">Le meilleur choix pour ce besoin.</div>
+          <div class="muted" style="margin-top:4px">${escapeHtml(primary.hint)}</div>
         </div>
         <div class="price">
           ${priceLineWithDiscount(primary, packDisc)} • Répéteurs: ${res.rep}
@@ -1034,7 +931,7 @@
 
       <div style="margin-top:10px; padding:12px; border-radius:16px; border:1px solid var(--border); background: rgba(255,255,255,.03)">
         <div class="h2" style="margin:0 0 8px">Comparatif rapide</div>
-        <div class="muted" style="margin-bottom:8px">Simple: option standard vs option recommandée.</div>
+        <div class="muted" style="margin-bottom:8px">Alternative vs recommandation — pour expliquer le “pourquoi” simplement.</div>
         <div style="overflow:auto">
           <table style="width:100%; border-collapse:collapse; font-size:13px">
             <thead>
@@ -1054,8 +951,8 @@
               </tr>
               <tr>
                 <td style="padding:10px; border-bottom:1px solid var(--border); color:var(--muted)">Wi-Fi</td>
-                <td style="padding:10px; border-bottom:1px solid var(--border)">Correct</td>
-                <td style="padding:10px; border-bottom:1px solid var(--border)">Optimal</td>
+                <td style="padding:10px; border-bottom:1px solid var(--border)">OK si logement simple</td>
+                <td style="padding:10px; border-bottom:1px solid var(--border)">Dimensionné au logement</td>
               </tr>
               <tr>
                 <td style="padding:10px; color:var(--muted)">Répéteurs</td>
@@ -1074,7 +971,7 @@
       </div>
 
       <div class="sp"></div>
-      <div class="muted">Alternative :</div>
+      <div class="muted">Alternative (si budget plus serré / usage plus simple) :</div>
       <div style="margin-top:6px"><span class="badge"><b>${escapeHtml(alt.name)}</b> — ${escapeHtml(alt.hint)} • ${priceLine(alt)}</span></div>
     `;
     root.appendChild(rec);
@@ -1096,12 +993,17 @@
 
     mob.innerHTML = `
       <div class="bd">
-        <div class="h2">Mobile recommandé</div>
+        <div class="h2">Mobile recommandé (positionnement)</div>
         <div class="row" style="justify-content:space-between; align-items:center">
           <div class="badge"><b>${escapeHtml(mp.name)}</b> — ${escapeHtml(mp.desc)}</div>
           ${priceBadge}
         </div>
-        ${state.mode === 'vendeur' ? `<ul class="list"><li>Argument clé: confort et sérénité au quotidien.</li></ul>` : ``}
+        ${state.mode === 'vendeur' ? `
+        <ul class="list">
+          <li>« Ce forfait n'est pas pour consommer plus, c'est pour ne jamais faire attention. »</li>
+          <li>« Quand le Wi-Fi n'est pas là, vous êtes tranquille : GPS, vidéo, hotspot. »</li>
+        </ul>
+        ` : ``}
         ${mOffer?.price?.promoNote ? `<div class="muted" style="margin-top:8px">Note : ${escapeHtml(mOffer.price.promoNote)}</div>` : ''}
       </div>
     `;
@@ -1113,8 +1015,8 @@
     opt.style.marginTop = '12px';
     opt.innerHTML = `
       <div class="bd">
-        <div class="h2">Options utiles</div>
-        ${opts.length ? opts.map(o=>`<div class="badge" style="margin:6px 0"><b>${escapeHtml(o.name)}</b> — ${escapeHtml(o.when)}</div>`).join('') : `<div class="muted">Aucune option prioritaire.</div>`}
+        <div class="h2">Options suggérées</div>
+        ${opts.length ? opts.map(o=>`<div class="badge" style="margin:6px 0"><b>${escapeHtml(o.name)}</b> — ${escapeHtml(o.when)}</div>`).join('') : `<div class="muted">Aucune option détectée comme prioritaire.</div>`}
         ${opts.length ? `<ul class="list">${opts.map(o=>`<li>${escapeHtml(o.script)}</li>`).join('')}</ul>` : ''}
       </div>
     `;
@@ -1126,10 +1028,10 @@
       seller.className = 'seller';
       seller.style.marginTop = '12px';
       seller.innerHTML = `
-        <div class="big">Aide conseiller</div>
+        <div class="big">Mode vendeur</div>
         ${res.sellerAlerts.length ? `<ul class="list" style="color:#d7fff7">${res.sellerAlerts.map(x=>`<li>${escapeHtml(x)}</li>`).join('')}</ul>` : `<div class="muted">Alerte : aucune.</div>`}
         <div class="sp"></div>
-        <div class="muted">Phrase simple: "On prend l'offre qui couvre vraiment votre besoin."</div>
+        <div class="muted">Phrase Wi-Fi : « Le Wi-Fi, ce n'est pas la box, c'est la maison. »</div>
       `;
       root.appendChild(seller);
     }
@@ -1159,7 +1061,7 @@
 
   function buildPlainTextRecap(res, primary, alt, mp, mOffer, opts, packDisc){
     const lines = [];
-    lines.push('RÉCAP CONFIGURATEUR');
+    lines.push('RÉCAP CONFIGURATEUR (V1)');
     lines.push('—');
     lines.push(`Mode: ${state.mode.toUpperCase()}`);
     lines.push(`Box Orange (Open): ${state.hasBox ? 'OUI' : 'NON'}`);
@@ -1241,13 +1143,8 @@
     const step = STEPS[state.step];
     safe('screenTitle').textContent = step.title;
     safe('screenHint').textContent = step.hint;
-    const questionTotal = questionCount(step.key);
-    const questionIndex = state.subStep?.[step.key] ?? 0;
-    safe('stepCount').textContent = `Étape ${state.step + 1} sur ${STEPS.length} • Question ${Math.min(questionIndex + 1, questionTotal)} / ${questionTotal}`;
-    const totalQuestions = Object.values(SUBSTEP_TOTALS).reduce((sum, n)=>sum+n, 0);
-    const doneBefore = STEPS.slice(0, state.step).reduce((sum, s)=>sum + questionCount(s.key), 0);
-    const doneCurrent = (step.key === 'result') ? 1 : Math.min(questionIndex, questionTotal);
-    const progress = ((doneBefore + doneCurrent) / totalQuestions) * 100;
+    safe('stepCount').textContent = `Étape ${state.step + 1} sur ${STEPS.length}`;
+    const progress = (state.step / (STEPS.length - 1)) * 100;
     safe('progressFill').style.width = `${Math.min(100, Math.max(0, progress))}%`;
 
     const root = safe('screen');
@@ -1276,24 +1173,11 @@
     state.security.forEach(s=>tags.appendChild(badge(`Sécurité: ${labelSec(s)}`)));
 
     const feedback = safe('clientFeedback');
-    const ai = buildLiveInsights();
     feedback.innerHTML = `
       <span>📶 Wi‑Fi : <b>${scoreLabel(res.wifiScore)}</b></span>
       <span>📡 Répéteurs : <b>${res.rep}</b></span>
       <span>⚡️ Internet : <b>${res.intensity}</b></span>
       <span>📱 Mobile : <b>${mp ? mp.name : '—'}</b></span>
-      ${ai.implicit[0] ? `<span>🧠 Besoin détecté : <b>${escapeHtml(ai.implicit[0].need)}</b></span>` : ''}
-    `;
-
-    const aiBox = safe('aiInsights');
-    aiBox.innerHTML = `
-      <div class="big">IA live</div>
-      <div class="muted">Besoins exprimés</div>
-      ${ai.explicit.length ? `<ul>${ai.explicit.map(x=>`<li>${escapeHtml(x)}</li>`).join('')}</ul>` : `<div class="muted">Pas assez de données.</div>`}
-      <div class="sp"></div>
-      <div class="muted">Besoins non exprimés (probables)</div>
-      ${ai.implicit.length ? `<ul>${ai.implicit.map(x=>`<li>${escapeHtml(x.need)} <b>(${escapeHtml(x.confidence)})</b></li>`).join('')}</ul>` : `<div class="muted">Aucun signal fort pour l'instant.</div>`}
-      ${ai.questionsToAsk.length ? `<div class="sp"></div><div class="muted">Questions à poser</div><ul>${ai.questionsToAsk.map(q=>`<li>${escapeHtml(q)}</li>`).join('')}</ul>` : ''}
     `;
 
     // Sidebar cachée en mode client
@@ -1322,7 +1206,7 @@
   // ---------------------------
   function init(){
     state = loadFromURL() || loadLocal() || deepClone(DEFAULT_STATE);
-    state = normalizeState(state);
+    if (!state.subStep) state.subStep = deepClone(DEFAULT_STATE.subStep);
 
     // Buttons sidebar
     safe('btnReset').onclick = () => { state = deepClone(DEFAULT_STATE); persist(); render(); };
@@ -1347,3 +1231,4 @@
 </script>
 </body>
 </html>
+
