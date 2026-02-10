@@ -30,8 +30,8 @@
     th { font-weight: 800; }
     .muted b, .muted strong { color: var(--text); }
 
-    .wrap{max-width:1050px; margin:0 auto; padding:20px}
-    .top{display:flex; gap:14px; align-items:flex-start; justify-content:space-between; margin:10px 0 18px}
+    .wrap{max-width:1120px; margin:0 auto; padding:20px}
+    .top{display:flex; gap:14px; align-items:flex-start; justify-content:space-between; margin:10px 0 12px}
     .brand{display:flex; gap:10px; align-items:center}
     .logo{width:40px; height:40px; border-radius:12px; background: linear-gradient(135deg, var(--accent), var(--accent2)); box-shadow: var(--shadow)}
     .title{font-weight:800; letter-spacing:.2px}
@@ -65,8 +65,29 @@
       color:#1a120b;
     }
 
-    .grid{display:grid; grid-template-columns: 1.2fr .8fr; gap:16px}
-    @media (max-width: 980px){ .grid{grid-template-columns:1fr} }
+    .hero{
+      display:grid; gap:12px; grid-template-columns: 1.6fr .4fr;
+      margin-bottom:18px; align-items:center;
+    }
+    .hero-card{
+      padding:14px 16px; border-radius:16px; border:1px solid var(--border);
+      background: rgba(255,255,255,.035);
+      display:flex; flex-direction:column; gap:8px;
+    }
+    .hero-title{font-weight:900; font-size:16px}
+    .hero-sub{color:var(--muted); font-size:13px}
+    .hero-kpis{display:flex; gap:12px; flex-wrap:wrap; margin-top:6px}
+    .hero-kpis span{
+      display:inline-flex; gap:8px; align-items:center; padding:6px 10px;
+      border-radius:999px; border:1px solid var(--border);
+      background: rgba(255,255,255,.03); font-size:12px; color:var(--muted)
+    }
+
+    .grid{display:grid; grid-template-columns: 1.15fr .85fr; gap:16px}
+    @media (max-width: 980px){
+      .grid{grid-template-columns:1fr}
+      .hero{grid-template-columns:1fr}
+    }
 
     .card{
       background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
@@ -74,13 +95,29 @@
       border-radius:var(--r);
       box-shadow: var(--shadow)
     }
-    .card .hd{padding:16px 16px 0}
-    .card .bd{padding:16px}
+    .card .hd{padding:18px 18px 0}
+    .card .bd{padding:18px}
     .h1{font-size:18px; font-weight:800; margin:0}
     .h2{font-size:14px; font-weight:800; margin:0 0 8px}
     .muted{color:var(--muted)}
     .row{display:flex; gap:10px; flex-wrap:wrap}
     .sp{height:10px}
+    .stepmeta{display:flex; align-items:center; justify-content:space-between; gap:8px; font-size:12px; color:var(--muted)}
+    .progress{
+      margin:10px 0 12px; width:100%; height:8px; border-radius:999px;
+      background: rgba(255,255,255,.06); overflow:hidden; border:1px solid var(--border)
+    }
+    .progress > div{
+      height:100%; border-radius:inherit;
+      background: linear-gradient(135deg, rgba(255,106,0,.95), rgba(255,138,61,.95));
+      transition: width .25s ease;
+    }
+    .feedback{
+      margin-top:10px; padding:10px 12px; border-radius:14px;
+      border:1px solid var(--border); background: rgba(255,255,255,.03);
+      display:flex; gap:8px; flex-wrap:wrap; font-size:12px; color:var(--muted)
+    }
+    .feedback span{display:inline-flex; gap:6px; align-items:center}
 
     .stepper{display:flex; gap:8px; align-items:center; flex-wrap:wrap}
     .dot{
@@ -130,7 +167,7 @@
     .chk .main{font-weight:800; font-size:14px; color:var(--text)}
     .chk .sub{color:var(--muted); font-size:12px; margin-top:4px}
 
-    .btnbar{display:flex; gap:10px; justify-content:space-between; margin-top:14px}
+    .btnbar{display:flex; gap:10px; justify-content:space-between; margin-top:16px}
     .btn{
       padding:11px 14px; border-radius:14px; border:1px solid var(--border);
       background: rgba(255,255,255,.04); color:var(--text);
@@ -145,6 +182,7 @@
     .btn.primary:hover{filter:brightness(1.03)}
     .btn.ghost{background: transparent}
     .btn:disabled{opacity:.45; cursor:not-allowed}
+    .btnhint{margin-top:8px; font-size:12px; color:var(--warn)}
 
     .side{display:grid; gap:16px}
     .kpi{display:grid; grid-template-columns: 1fr 1fr; gap:10px}
@@ -212,14 +250,37 @@
       </div>
     </div>
 
+    <div class="hero">
+      <div class="hero-card">
+        <div class="hero-title">Un parcours client fluide en 2 minutes</div>
+        <div class="hero-sub">Quelques réponses rapides → une recommandation claire, compréhensible et rassurante.</div>
+        <div class="hero-kpis">
+          <span>⚡️ Moins de questions, plus d'impact</span>
+          <span>🧭 Recommandation justifiée</span>
+          <span>🧩 Compatible tablette</span>
+        </div>
+      </div>
+      <div class="hero-card">
+        <div class="hero-title">Temps estimé</div>
+        <div class="hero-sub">≈ 2 minutes</div>
+        <div class="hero-sub">Aucune donnée personnelle</div>
+      </div>
+    </div>
+
     <div class="grid">
       <!-- Main -->
       <div class="card">
         <div class="hd">
           <div class="stepper" id="stepper"></div>
           <div class="sp"></div>
+          <div class="stepmeta">
+            <span id="stepCount">Étape —</span>
+            <span>Conseil client : répondre franchement</span>
+          </div>
+          <div class="progress"><div id="progressFill" style="width:0%"></div></div>
           <div class="h1" id="screenTitle">—</div>
           <div class="muted" id="screenHint" style="margin-top:6px">—</div>
+          <div class="feedback" id="clientFeedback" aria-live="polite"></div>
         </div>
         <div class="bd" id="screen"></div>
       </div>
@@ -333,17 +394,20 @@
     mobileContext: [],
     security: [],
     devices: [],
+    subStep: { housing:0, internet:0, mobile:0, security:0, result:0 },
   };
 
   let state = null;
 
   const STEPS = [
-    { key:'housing',  title:'Logement & Wi-Fi', hint:'On dimensionne la couverture réelle : surface, étages, murs. (Ça évite les retours.)' },
+    { key:'housing',  title:'Logement & Wi-Fi', hint:'On dimensionne la couverture réelle : logement, surface, étages, murs. (Moins de mauvaises surprises.)' },
     { key:'internet', title:'Usages Internet', hint:'On identifie l\'intensité : télétravail, gaming, streaming, famille.' },
     { key:'mobile',   title:'Mobile (sans parler de Go)', hint:'On vend du confort : ne plus surveiller, pouvoir partager, gérer l\'imprévu.' },
     { key:'security', title:'Sécurité & Sérénité', hint:'Déclencheurs simples : absences, enfants, appareils sensibles.' },
     { key:'result',   title:'Résultat', hint:'Recommandation + justification client + scripts vendeur.' },
   ];
+
+  const SUBSTEP_TOTALS = { housing:5, internet:1, mobile:3, security:1, result:1 };
 
   const $ = (id) => document.getElementById(id);
 
@@ -356,6 +420,10 @@
   function deepClone(obj){
     try{ if (typeof structuredClone === 'function') return structuredClone(obj); } catch {}
     return JSON.parse(JSON.stringify(obj));
+  }
+
+  function clamp(n, min, max){
+    return Math.max(min, Math.min(max, n));
   }
 
   // ---------------------------
@@ -578,14 +646,14 @@
       st.mobileContext = obj.mc || [];
       st.security = obj.se || [];
       st.devices = obj.d || [];
-      return st;
+      return normalizeState(st);
     } catch { return null; }
   }
 
   function loadLocal(){
     try{
       const raw = localStorage.getItem('cfg_v1_state');
-      return raw ? JSON.parse(raw) : null;
+      return raw ? normalizeState(JSON.parse(raw)) : null;
     } catch { return null; }
   }
 
@@ -651,8 +719,8 @@
       btn.className = 'dot' + (i === state.step ? ' active' : (i < state.step ? ' done' : ''));
       btn.textContent = (i+1);
       btn.title = s.title;
-      btn.addEventListener('click', (e)=>{ e.preventDefault(); state.step = i; persist(); render(); });
-      btn.addEventListener('touchend', (e)=>{ e.preventDefault(); state.step = i; persist(); render(); }, { passive:false });
+      btn.addEventListener('click', (e)=>{ e.preventDefault(); state.step = i; state.subStep[s.key] = 0; persist(); render(); });
+      btn.addEventListener('touchend', (e)=>{ e.preventDefault(); state.step = i; state.subStep[s.key] = 0; persist(); render(); }, { passive:false });
       el.appendChild(btn);
       if (i < STEPS.length-1) {
         const line = document.createElement('div');
@@ -662,18 +730,91 @@
     });
   }
 
-  function navButtons(nextLabel='Suivant'){
+  function questionCount(key){
+    return SUBSTEP_TOTALS[key] || 1;
+  }
+
+  function validationMessage(stepKey, idx){
+    if (stepKey === 'housing' && idx === 0 && !state.housing.type) return 'Choisissez le type de logement pour continuer.';
+    if (stepKey === 'housing' && idx === 1 && state.housing.surface == null) return 'Sélectionnez une surface approximative.';
+    if (stepKey === 'housing' && idx === 2 && state.housing.floors == null) return 'Indiquez le nombre d\'étages.';
+    if (stepKey === 'housing' && idx === 3 && !state.housing.walls) return 'Choisissez le type de murs majoritaire.';
+    if (stepKey === 'housing' && idx === 4 && !state.housing.boxPlacement) return 'Précisez l\'emplacement probable de la box.';
+    if (stepKey === 'internet' && state.internetUsage.length === 0) return 'Sélectionnez au moins un usage internet.';
+    if (stepKey === 'mobile' && idx === 1 && state.mobileContext.length === 0) return 'Sélectionnez au moins une situation mobile.';
+    if (stepKey === 'security' && state.security.length === 0) return 'Sélectionnez au moins un besoin de protection.';
+    return '';
+  }
+
+  function questionNav(stepKey, total, finalLabel='Suivant'){
     const nav = document.createElement('div');
+    const idx = state.subStep[stepKey] || 0;
+    const isLastQuestion = idx >= total - 1;
+    const message = validationMessage(stepKey, idx);
     nav.className = 'btnbar';
     nav.innerHTML = `
-      <button class="btn" id="btnPrev" type="button" ${state.step===0?'disabled':''}>Retour</button>
-      <button class="btn primary" id="btnNext" type="button">${nextLabel}</button>
+      <button class="btn" data-nav="prev" type="button" ${(state.step===0 && idx===0)?'disabled':''}>Retour</button>
+      <button class="btn primary" data-nav="next" type="button" ${message ? 'disabled' : ''}>${isLastQuestion ? finalLabel : 'Continuer'}</button>
     `;
-    setTimeout(()=>{
-      safe('btnPrev').onclick = () => { state.step = Math.max(0, state.step-1); persist(); render(); };
-      safe('btnNext').onclick = () => { state.step = Math.min(STEPS.length-1, state.step+1); persist(); render(); };
-    });
+    if (message) nav.insertAdjacentHTML('beforeend', `<div class="btnhint">${message}</div>`);
+
+    const prevBtn = nav.querySelector('[data-nav="prev"]');
+    const nextBtn = nav.querySelector('[data-nav="next"]');
+
+    prevBtn.onclick = () => {
+      const subStepIndex = state.subStep[stepKey] || 0;
+      if (subStepIndex > 0) {
+        state.subStep[stepKey] = subStepIndex - 1;
+      } else {
+        const prevStep = Math.max(0, state.step - 1);
+        state.step = prevStep;
+        const prevKey = STEPS[prevStep].key;
+        state.subStep[prevKey] = questionCount(prevKey) - 1;
+      }
+      persist(); render();
+    };
+
+    nextBtn.onclick = () => {
+      if (message) return;
+      const subStepIndex = state.subStep[stepKey] || 0;
+      if (subStepIndex < total - 1) {
+        state.subStep[stepKey] = subStepIndex + 1;
+      } else {
+        state.step = Math.min(STEPS.length-1, state.step+1);
+        const nextKey = STEPS[state.step].key;
+        state.subStep[nextKey] = 0;
+      }
+      persist(); render();
+    };
+
     return nav;
+  }
+
+  function normalizeState(raw){
+    const normalized = deepClone(DEFAULT_STATE);
+    if (!raw || typeof raw !== 'object') return normalized;
+
+    normalized.step = clamp(Number(raw.step ?? 0) || 0, 0, STEPS.length - 1);
+    normalized.mode = raw.mode === 'vendeur' ? 'vendeur' : 'client';
+    normalized.hasBox = raw.hasBox !== false;
+
+    normalized.housing.type = ['appart','maison'].includes(raw.housing?.type) ? raw.housing.type : null;
+    normalized.housing.surface = [40,70,110,150].includes(Number(raw.housing?.surface)) ? Number(raw.housing.surface) : null;
+    normalized.housing.floors = [0,1,2,3].includes(Number(raw.housing?.floors)) ? Number(raw.housing.floors) : null;
+    normalized.housing.walls = ['placo','beton'].includes(raw.housing?.walls) ? raw.housing.walls : null;
+    normalized.housing.boxPlacement = ['central','excentre','garage','inconnu'].includes(raw.housing?.boxPlacement) ? raw.housing.boxPlacement : null;
+
+    normalized.internetUsage = (Array.isArray(raw.internetUsage) ? raw.internetUsage : []).filter(v => ['teletravail','gaming','streaming','famille','iot'].includes(v));
+    normalized.mobileContext = (Array.isArray(raw.mobileContext) ? raw.mobileContext : []).filter(v => ['gps','video','hotspot','wifi_unstable','zero_stress'].includes(v));
+    normalized.security = (Array.isArray(raw.security) ? raw.security : []).filter(v => ['absences','rdc','enfants','pc_pro'].includes(v));
+    normalized.devices = (Array.isArray(raw.devices) ? raw.devices : []).filter(v => ['watch','tablet','car'].includes(v));
+
+    const rawSubStep = raw.subStep || {};
+    Object.keys(SUBSTEP_TOTALS).forEach((key) => {
+      normalized.subStep[key] = clamp(Number(rawSubStep[key] ?? 0) || 0, 0, questionCount(key) - 1);
+    });
+
+    return normalized;
   }
 
   // ---------------------------
@@ -681,43 +822,53 @@
   // ---------------------------
   function renderHousing(root){
     root.innerHTML = '';
-    root.insertAdjacentHTML('beforeend', `<div class="q"><label>Surface du logement</label><div class="seg" id="segSurface"></div></div>`);
-    setSeg('segSurface', [
-      { value: 40, label: '< 50 m²', hint: 'Wi-Fi souvent simple' },
-      { value: 70, label: '50–90 m²', hint: 'À surveiller selon murs' },
-      { value: 110, label: '90–130 m²', hint: 'Répéteur souvent utile' },
-      { value: 150, label: '+ 130 m²', hint: 'Couverture à sécuriser' },
-    ], state.housing.surface, (v)=>{ state.housing.surface=v; persist(); render(); });
+    const questions = [
+      () => {
+        root.insertAdjacentHTML('beforeend', `<div class="q"><label>Vous vivez plutôt en…</label><div class="seg2" id="segType"></div></div>`);
+        setSeg('segType', [
+          { value: 'appart', label: 'Appartement', hint: '' },
+          { value: 'maison', label: 'Maison', hint: '' },
+        ], state.housing.type, (v)=>{ state.housing.type=v; persist(); render(); });
+      },
+      () => {
+        root.insertAdjacentHTML('beforeend', `<div class="q"><label>Surface approximative <span class="muted">(ex. studio / T2 / maison 4 pièces)</span></label><div class="seg" id="segSurface"></div></div>`);
+        setSeg('segSurface', [
+          { value: 40, label: '< 50 m²', hint: 'Wi-Fi souvent simple' },
+          { value: 70, label: '50–90 m²', hint: 'À surveiller selon murs' },
+          { value: 110, label: '90–130 m²', hint: 'Répéteur souvent utile' },
+          { value: 150, label: '+ 130 m²', hint: 'Couverture à sécuriser' },
+        ], state.housing.surface, (v)=>{ state.housing.surface=v; persist(); render(); });
+      },
+      () => {
+        root.insertAdjacentHTML('beforeend', `<div class="q"><label>Étages</label><div class="seg" id="segFloors"></div></div>`);
+        setSeg('segFloors', [
+          { value: 0, label: '0', hint: 'Plain pied / même niveau' },
+          { value: 1, label: '1', hint: 'Wi-Fi à l\'étage' },
+          { value: 2, label: '2+', hint: 'Couverture plus difficile' },
+          { value: 3, label: '3+', hint: 'Cas exigeant' },
+        ], state.housing.floors, (v)=>{ state.housing.floors=v; persist(); render(); });
+      },
+      () => {
+        root.insertAdjacentHTML('beforeend', `<div class="q"><label>Murs majoritaires</label><div class="seg2" id="segWalls"></div></div>`);
+        setSeg('segWalls', [
+          { value: 'placo', label: 'Placoplâtre', hint: 'Diffusion OK' },
+          { value: 'beton', label: 'Béton / pierre', hint: 'Atténuation forte' },
+        ], state.housing.walls, (v)=>{ state.housing.walls=v; persist(); render(); });
+      },
+      () => {
+        root.insertAdjacentHTML('beforeend', `<div class="q"><label>Emplacement probable de la box <span class="muted">(salon / entrée / garage)</span></label><div class="seg" id="segPlace"></div></div>`);
+        setSeg('segPlace', [
+          { value: 'central', label: 'Central', hint: 'Meilleur scénario' },
+          { value: 'excentre', label: 'Excentré', hint: 'Couverture à surveiller' },
+          { value: 'garage', label: 'Garage / local', hint: 'Propagation difficile' },
+          { value: 'inconnu', label: 'Je ne sais pas', hint: '' },
+        ], state.housing.boxPlacement, (v)=>{ state.housing.boxPlacement=v; persist(); render(); });
+      },
+    ];
 
-    root.insertAdjacentHTML('beforeend', `<div class="q"><label>Type de logement</label><div class="seg2" id="segType"></div></div>`);
-    setSeg('segType', [
-      { value: 'appart', label: 'Appartement', hint: '' },
-      { value: 'maison', label: 'Maison', hint: '' },
-    ], state.housing.type, (v)=>{ state.housing.type=v; persist(); render(); });
-
-    root.insertAdjacentHTML('beforeend', `<div class="q"><label>Étages</label><div class="seg" id="segFloors"></div></div>`);
-    setSeg('segFloors', [
-      { value: 0, label: '0', hint: 'Plain pied / même niveau' },
-      { value: 1, label: '1', hint: 'Wi-Fi à l\'étage' },
-      { value: 2, label: '2+', hint: 'Couverture plus difficile' },
-      { value: 3, label: '3+', hint: 'Cas exigeant' },
-    ], state.housing.floors, (v)=>{ state.housing.floors=v; persist(); render(); });
-
-    root.insertAdjacentHTML('beforeend', `<div class="q"><label>Murs majoritaires</label><div class="seg2" id="segWalls"></div></div>`);
-    setSeg('segWalls', [
-      { value: 'placo', label: 'Placoplâtre', hint: 'Diffusion OK' },
-      { value: 'beton', label: 'Béton / pierre', hint: 'Atténuation forte' },
-    ], state.housing.walls, (v)=>{ state.housing.walls=v; persist(); render(); });
-
-    root.insertAdjacentHTML('beforeend', `<div class="q"><label>Emplacement probable de la box</label><div class="seg" id="segPlace"></div></div>`);
-    setSeg('segPlace', [
-      { value: 'central', label: 'Central', hint: 'Meilleur scénario' },
-      { value: 'excentre', label: 'Excentré', hint: 'Couverture à surveiller' },
-      { value: 'garage', label: 'Garage / local', hint: 'Propagation difficile' },
-      { value: 'inconnu', label: 'Je ne sais pas', hint: '' },
-    ], state.housing.boxPlacement, (v)=>{ state.housing.boxPlacement=v; persist(); render(); });
-
-    root.appendChild(navButtons());
+    const idx = state.subStep.housing || 0;
+    questions[Math.min(idx, questions.length - 1)]();
+    root.appendChild(questionNav('housing', questions.length));
   }
 
   function renderInternet(root){
@@ -735,59 +886,66 @@
       state.internetUsage = [...selected];
       persist(); render();
     });
-    root.appendChild(navButtons());
+    root.appendChild(questionNav('internet', 1));
   }
 
   function renderMobile(root){
     root.innerHTML = '';
+    const questions = [
+      () => {
+        const openCard = document.createElement('div');
+        openCard.className = 'card';
+        openCard.innerHTML = `
+          <div class="bd">
+            <div class="h2">Avantage Open</div>
+            <div class="muted">Active la remise Open si le client a une box Orange (déjà ou en souscription).</div>
+            <div class="sp"></div>
+            <button class="btn ${state.hasBox ? 'primary' : ''}" id="btnHasBox" type="button">
+              ${state.hasBox ? '✅ Box Orange : OUI (Open actif)' : '⬜ Box Orange : NON (Open inactif)'}
+            </button>
+          </div>
+        `;
+        root.appendChild(openCard);
+        setTimeout(()=>{ safe('btnHasBox').onclick = () => { state.hasBox = !state.hasBox; persist(); render(); }; });
+      },
+      () => {
+        root.insertAdjacentHTML('beforeend', `<div class="q"><label>Hors Wi-Fi, dans ces situations, lesquelles vous arrivent ?</label><div class="checklist" id="chkMobile"></div></div>`);
+        const selected = new Set(state.mobileContext);
+        setChecks('chkMobile', [
+          { value: 'gps', label: 'GPS / voiture', hint: 'Trafic temps réel + itinéraires' },
+          { value: 'video', label: 'Vidéos / réseaux sociaux', hint: 'Vidéo auto → conso invisible' },
+          { value: 'hotspot', label: 'Partage de connexion', hint: 'PC / tablette → ça monte vite' },
+          { value: 'wifi_unstable', label: 'Wi-Fi parfois indisponible', hint: 'Imprévus / déplacements' },
+          { value: 'zero_stress', label: 'Je veux être tranquille', hint: 'Zéro surveillance' },
+        ], selected, (v)=>{
+          if (selected.has(v)) selected.delete(v); else selected.add(v);
+          state.mobileContext = [...selected];
+          persist(); render();
+        });
+      },
+      () => {
+        root.insertAdjacentHTML('beforeend', `<div class="q"><label>Appareils concernés</label><div class="checklist" id="chkDevices"></div></div>`);
+        const dev = new Set(state.devices);
+        setChecks('chkDevices', [
+          { value: 'watch', label: 'Montre connectée (eSIM)', hint: 'Multi-SIM pertinente' },
+          { value: 'tablet', label: 'Tablette', hint: 'Multi-SIM / data dédiée' },
+          { value: 'car', label: 'Voiture / routeur', hint: 'Connexion embarquée' },
+        ], dev, (v)=>{
+          if (dev.has(v)) dev.delete(v); else dev.add(v);
+          state.devices = [...dev];
+          persist(); render();
+        });
+      },
+    ];
 
-    const openCard = document.createElement('div');
-    openCard.className = 'card';
-    openCard.innerHTML = `
-      <div class="bd">
-        <div class="h2">Avantage Open</div>
-        <div class="muted">Active la remise Open si le client a une box Orange (déjà ou en souscription).</div>
-        <div class="sp"></div>
-        <button class="btn ${state.hasBox ? 'primary' : ''}" id="btnHasBox" type="button">
-          ${state.hasBox ? '✅ Box Orange : OUI (Open actif)' : '⬜ Box Orange : NON (Open inactif)'}
-        </button>
-      </div>
-    `;
-    root.appendChild(openCard);
-    setTimeout(()=>{ safe('btnHasBox').onclick = () => { state.hasBox = !state.hasBox; persist(); render(); }; });
-
-    root.insertAdjacentHTML('beforeend', `<div class="q"><label>Hors Wi-Fi, qu\'est-ce qui vous arrive souvent ?</label><div class="checklist" id="chkMobile"></div></div>`);
-    const selected = new Set(state.mobileContext);
-    setChecks('chkMobile', [
-      { value: 'gps', label: 'GPS / voiture', hint: 'Trafic temps réel + itinéraires' },
-      { value: 'video', label: 'Vidéos / réseaux sociaux', hint: 'Vidéo auto → conso invisible' },
-      { value: 'hotspot', label: 'Partage de connexion', hint: 'PC / tablette → ça monte vite' },
-      { value: 'wifi_unstable', label: 'Wi-Fi parfois indisponible', hint: 'Imprévus / déplacements' },
-      { value: 'zero_stress', label: 'Je veux être tranquille', hint: 'Zéro surveillance' },
-    ], selected, (v)=>{
-      if (selected.has(v)) selected.delete(v); else selected.add(v);
-      state.mobileContext = [...selected];
-      persist(); render();
-    });
-
-    root.insertAdjacentHTML('beforeend', `<div class="q"><label>Appareils concernés</label><div class="checklist" id="chkDevices"></div></div>`);
-    const dev = new Set(state.devices);
-    setChecks('chkDevices', [
-      { value: 'watch', label: 'Montre connectée (eSIM)', hint: 'Multi-SIM pertinente' },
-      { value: 'tablet', label: 'Tablette', hint: 'Multi-SIM / data dédiée' },
-      { value: 'car', label: 'Voiture / routeur', hint: 'Connexion embarquée' },
-    ], dev, (v)=>{
-      if (dev.has(v)) dev.delete(v); else dev.add(v);
-      state.devices = [...dev];
-      persist(); render();
-    });
-
-    root.appendChild(navButtons());
+    const idx = state.subStep.mobile || 0;
+    questions[Math.min(idx, questions.length - 1)]();
+    root.appendChild(questionNav('mobile', questions.length));
   }
 
   function renderSecurity(root){
     root.innerHTML = '';
-    root.insertAdjacentHTML('beforeend', `<div class="q"><label>Contexte sécurité (plusieurs choix)</label><div class="checklist" id="chkSec"></div></div>`);
+    root.insertAdjacentHTML('beforeend', `<div class="q"><label>Ce que vous souhaitez protéger (plusieurs choix)</label><div class="checklist" id="chkSec"></div></div>`);
     const selected = new Set(state.security);
     setChecks('chkSec', [
       { value: 'absences', label: 'Absences fréquentes', hint: 'Travail, vacances, déplacements' },
@@ -799,8 +957,7 @@
       state.security = [...selected];
       persist(); render();
     });
-
-    root.appendChild(navButtons('Voir le résultat'));
+    root.appendChild(questionNav('security', 1, 'Voir le résultat'));
   }
 
   function renderResult(root){
@@ -953,7 +1110,12 @@
     root.appendChild(nav);
 
     setTimeout(()=>{
-      safe('btnPrev').onclick = () => { state.step = Math.max(0, state.step-1); persist(); render(); };
+      safe('btnPrev').onclick = () => {
+        state.step = Math.max(0, state.step-1);
+        const prevKey = STEPS[state.step].key;
+        state.subStep[prevKey] = questionCount(prevKey) - 1;
+        persist(); render();
+      };
       safe('btnCopy').onclick = () => {
         navigator.clipboard?.writeText(buildPlainTextRecap(res, primary, alt, mp, mOffer, opts, packDisc));
         toast('Récap copié dans le presse-papiers.');
@@ -1045,6 +1207,14 @@
     const step = STEPS[state.step];
     safe('screenTitle').textContent = step.title;
     safe('screenHint').textContent = step.hint;
+    const questionTotal = questionCount(step.key);
+    const questionIndex = state.subStep?.[step.key] ?? 0;
+    safe('stepCount').textContent = `Étape ${state.step + 1} sur ${STEPS.length} • Question ${Math.min(questionIndex + 1, questionTotal)} / ${questionTotal}`;
+    const totalQuestions = Object.values(SUBSTEP_TOTALS).reduce((sum, n)=>sum+n, 0);
+    const doneBefore = STEPS.slice(0, state.step).reduce((sum, s)=>sum + questionCount(s.key), 0);
+    const doneCurrent = (step.key === 'result') ? 1 : Math.min(questionIndex, questionTotal);
+    const progress = ((doneBefore + doneCurrent) / totalQuestions) * 100;
+    safe('progressFill').style.width = `${Math.min(100, Math.max(0, progress))}%`;
 
     const root = safe('screen');
     if (step.key === 'housing') renderHousing(root);
@@ -1070,6 +1240,14 @@
     state.internetUsage.forEach(u=>tags.appendChild(badge(`Internet: ${labelInternet(u)}`)));
     state.mobileContext.forEach(c=>tags.appendChild(badge(`Mobile: ${labelMobile(c)}`)));
     state.security.forEach(s=>tags.appendChild(badge(`Sécurité: ${labelSec(s)}`)));
+
+    const feedback = safe('clientFeedback');
+    feedback.innerHTML = `
+      <span>📶 Wi‑Fi : <b>${scoreLabel(res.wifiScore)}</b></span>
+      <span>📡 Répéteurs : <b>${res.rep}</b></span>
+      <span>⚡️ Internet : <b>${res.intensity}</b></span>
+      <span>📱 Mobile : <b>${mp ? mp.name : '—'}</b></span>
+    `;
 
     // Sidebar cachée en mode client
     const side = safe('sidePanel');
@@ -1097,6 +1275,7 @@
   // ---------------------------
   function init(){
     state = loadFromURL() || loadLocal() || deepClone(DEFAULT_STATE);
+    state = normalizeState(state);
 
     // Buttons sidebar
     safe('btnReset').onclick = () => { state = deepClone(DEFAULT_STATE); persist(); render(); };
