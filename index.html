@@ -182,6 +182,7 @@
     .btn.primary:hover{filter:brightness(1.03)}
     .btn.ghost{background: transparent}
     .btn:disabled{opacity:.45; cursor:not-allowed}
+    .btnhint{margin-top:8px; font-size:12px; color:var(--warn)}
 
     .side{display:grid; gap:16px}
     .kpi{display:grid; grid-template-columns: 1fr 1fr; gap:10px}
@@ -406,6 +407,8 @@
     { key:'result',   title:'Résultat', hint:'Recommandation + justification client + scripts vendeur.' },
   ];
 
+  const SUBSTEP_TOTALS = { housing:5, internet:1, mobile:3, security:1, result:1 };
+
   const $ = (id) => document.getElementById(id);
 
   function safe(id){
@@ -417,6 +420,10 @@
   function deepClone(obj){
     try{ if (typeof structuredClone === 'function') return structuredClone(obj); } catch {}
     return JSON.parse(JSON.stringify(obj));
+  }
+
+  function clamp(n, min, max){
+    return Math.max(min, Math.min(max, n));
   }
 
   // ---------------------------
@@ -639,14 +646,14 @@
       st.mobileContext = obj.mc || [];
       st.security = obj.se || [];
       st.devices = obj.d || [];
-      return st;
+      return normalizeState(st);
     } catch { return null; }
   }
 
   function loadLocal(){
     try{
       const raw = localStorage.getItem('cfg_v1_state');
-      return raw ? JSON.parse(raw) : null;
+      return raw ? normalizeState(JSON.parse(raw)) : null;
     } catch { return null; }
   }
 
