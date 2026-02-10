@@ -731,90 +731,43 @@
   }
 
   function questionCount(key){
-    return SUBSTEP_TOTALS[key] || 1;
-  }
-
-  function validationMessage(stepKey, idx){
-    if (stepKey === 'housing' && idx === 0 && !state.housing.type) return 'Choisissez le type de logement pour continuer.';
-    if (stepKey === 'housing' && idx === 1 && state.housing.surface == null) return 'Sélectionnez une surface approximative.';
-    if (stepKey === 'housing' && idx === 2 && state.housing.floors == null) return 'Indiquez le nombre d\'étages.';
-    if (stepKey === 'housing' && idx === 3 && !state.housing.walls) return 'Choisissez le type de murs majoritaire.';
-    if (stepKey === 'housing' && idx === 4 && !state.housing.boxPlacement) return 'Précisez l\'emplacement probable de la box.';
-    if (stepKey === 'internet' && state.internetUsage.length === 0) return 'Sélectionnez au moins un usage internet.';
-    if (stepKey === 'mobile' && idx === 1 && state.mobileContext.length === 0) return 'Sélectionnez au moins une situation mobile.';
-    if (stepKey === 'security' && state.security.length === 0) return 'Sélectionnez au moins un besoin de protection.';
-    return '';
+    return ({ housing:5, internet:1, mobile:3, security:1, result:1 })[key] || 1;
   }
 
   function questionNav(stepKey, total, finalLabel='Suivant'){
     const nav = document.createElement('div');
     const idx = state.subStep[stepKey] || 0;
-    const isLastQuestion = idx >= total - 1;
-    const message = validationMessage(stepKey, idx);
     nav.className = 'btnbar';
     nav.innerHTML = `
-      <button class="btn" data-nav="prev" type="button" ${(state.step===0 && idx===0)?'disabled':''}>Retour</button>
-      <button class="btn primary" data-nav="next" type="button" ${message ? 'disabled' : ''}>${isLastQuestion ? finalLabel : 'Continuer'}</button>
+      <button class="btn" id="btnPrev" type="button" ${(state.step===0 && idx===0)?'disabled':''}>Retour</button>
+      <button class="btn primary" id="btnNext" type="button">${finalLabel}</button>
     `;
-    if (message) nav.insertAdjacentHTML('beforeend', `<div class="btnhint">${message}</div>`);
-
-    const prevBtn = nav.querySelector('[data-nav="prev"]');
-    const nextBtn = nav.querySelector('[data-nav="next"]');
-
-    prevBtn.onclick = () => {
-      const subStepIndex = state.subStep[stepKey] || 0;
-      if (subStepIndex > 0) {
-        state.subStep[stepKey] = subStepIndex - 1;
-      } else {
-        const prevStep = Math.max(0, state.step - 1);
-        state.step = prevStep;
-        const prevKey = STEPS[prevStep].key;
-        state.subStep[prevKey] = questionCount(prevKey) - 1;
-      }
-      persist(); render();
-    };
-
-    nextBtn.onclick = () => {
-      if (message) return;
-      const subStepIndex = state.subStep[stepKey] || 0;
-      if (subStepIndex < total - 1) {
-        state.subStep[stepKey] = subStepIndex + 1;
-      } else {
-        state.step = Math.min(STEPS.length-1, state.step+1);
-        const nextKey = STEPS[state.step].key;
-        state.subStep[nextKey] = 0;
-      }
-      persist(); render();
-    };
-
-    return nav;
-  }
-
-  function normalizeState(raw){
-    const normalized = deepClone(DEFAULT_STATE);
-    if (!raw || typeof raw !== 'object') return normalized;
-
-    normalized.step = clamp(Number(raw.step ?? 0) || 0, 0, STEPS.length - 1);
-    normalized.mode = raw.mode === 'vendeur' ? 'vendeur' : 'client';
-    normalized.hasBox = raw.hasBox !== false;
-
-    normalized.housing.type = ['appart','maison'].includes(raw.housing?.type) ? raw.housing.type : null;
-    normalized.housing.surface = [40,70,110,150].includes(Number(raw.housing?.surface)) ? Number(raw.housing.surface) : null;
-    normalized.housing.floors = [0,1,2,3].includes(Number(raw.housing?.floors)) ? Number(raw.housing.floors) : null;
-    normalized.housing.walls = ['placo','beton'].includes(raw.housing?.walls) ? raw.housing.walls : null;
-    normalized.housing.boxPlacement = ['central','excentre','garage','inconnu'].includes(raw.housing?.boxPlacement) ? raw.housing.boxPlacement : null;
-
-    normalized.internetUsage = (Array.isArray(raw.internetUsage) ? raw.internetUsage : []).filter(v => ['teletravail','gaming','streaming','famille','iot'].includes(v));
-    normalized.mobileContext = (Array.isArray(raw.mobileContext) ? raw.mobileContext : []).filter(v => ['gps','video','hotspot','wifi_unstable','zero_stress'].includes(v));
-    normalized.security = (Array.isArray(raw.security) ? raw.security : []).filter(v => ['absences','rdc','enfants','pc_pro'].includes(v));
-    normalized.devices = (Array.isArray(raw.devices) ? raw.devices : []).filter(v => ['watch','tablet','car'].includes(v));
-
-    const rawSubStep = raw.subStep || {};
-    Object.keys(SUBSTEP_TOTALS).forEach((key) => {
-      normalized.subStep[key] = clamp(Number(rawSubStep[key] ?? 0) || 0, 0, questionCount(key) - 1);
+    setTimeout(()=>{
+      safe('btnPrev').onclick = () => {
+        const idx = state.subStep[stepKey] || 0;
+        if (idx > 0) {
+          state.subStep[stepKey] = idx - 1;
+        } else {
+          const prevStep = Math.max(0, state.step - 1);
+          state.step = prevStep;
+          const prevKey = STEPS[prevStep].key;
+          state.subStep[prevKey] = questionCount(prevKey) - 1;
+        }
+        persist(); render();
+      };
+      safe('btnNext').onclick = () => {
+        const idx = state.subStep[stepKey] || 0;
+        if (idx < total - 1) {
+          state.subStep[stepKey] = idx + 1;
+        } else {
+          state.step = Math.min(STEPS.length-1, state.step+1);
+          const nextKey = STEPS[state.step].key;
+          state.subStep[nextKey] = 0;
+        }
+        persist(); render();
+      };
     });
-
-    return normalized;
+    return nav;
   }
 
   // ---------------------------
@@ -822,53 +775,43 @@
   // ---------------------------
   function renderHousing(root){
     root.innerHTML = '';
-    const questions = [
-      () => {
-        root.insertAdjacentHTML('beforeend', `<div class="q"><label>Vous vivez plutôt en…</label><div class="seg2" id="segType"></div></div>`);
-        setSeg('segType', [
-          { value: 'appart', label: 'Appartement', hint: '' },
-          { value: 'maison', label: 'Maison', hint: '' },
-        ], state.housing.type, (v)=>{ state.housing.type=v; persist(); render(); });
-      },
-      () => {
-        root.insertAdjacentHTML('beforeend', `<div class="q"><label>Surface approximative <span class="muted">(ex. studio / T2 / maison 4 pièces)</span></label><div class="seg" id="segSurface"></div></div>`);
-        setSeg('segSurface', [
-          { value: 40, label: '< 50 m²', hint: 'Wi-Fi souvent simple' },
-          { value: 70, label: '50–90 m²', hint: 'À surveiller selon murs' },
-          { value: 110, label: '90–130 m²', hint: 'Répéteur souvent utile' },
-          { value: 150, label: '+ 130 m²', hint: 'Couverture à sécuriser' },
-        ], state.housing.surface, (v)=>{ state.housing.surface=v; persist(); render(); });
-      },
-      () => {
-        root.insertAdjacentHTML('beforeend', `<div class="q"><label>Étages</label><div class="seg" id="segFloors"></div></div>`);
-        setSeg('segFloors', [
-          { value: 0, label: '0', hint: 'Plain pied / même niveau' },
-          { value: 1, label: '1', hint: 'Wi-Fi à l\'étage' },
-          { value: 2, label: '2+', hint: 'Couverture plus difficile' },
-          { value: 3, label: '3+', hint: 'Cas exigeant' },
-        ], state.housing.floors, (v)=>{ state.housing.floors=v; persist(); render(); });
-      },
-      () => {
-        root.insertAdjacentHTML('beforeend', `<div class="q"><label>Murs majoritaires</label><div class="seg2" id="segWalls"></div></div>`);
-        setSeg('segWalls', [
-          { value: 'placo', label: 'Placoplâtre', hint: 'Diffusion OK' },
-          { value: 'beton', label: 'Béton / pierre', hint: 'Atténuation forte' },
-        ], state.housing.walls, (v)=>{ state.housing.walls=v; persist(); render(); });
-      },
-      () => {
-        root.insertAdjacentHTML('beforeend', `<div class="q"><label>Emplacement probable de la box <span class="muted">(salon / entrée / garage)</span></label><div class="seg" id="segPlace"></div></div>`);
-        setSeg('segPlace', [
-          { value: 'central', label: 'Central', hint: 'Meilleur scénario' },
-          { value: 'excentre', label: 'Excentré', hint: 'Couverture à surveiller' },
-          { value: 'garage', label: 'Garage / local', hint: 'Propagation difficile' },
-          { value: 'inconnu', label: 'Je ne sais pas', hint: '' },
-        ], state.housing.boxPlacement, (v)=>{ state.housing.boxPlacement=v; persist(); render(); });
-      },
-    ];
+    root.insertAdjacentHTML('beforeend', `<div class="q"><label>Vous vivez plutôt en…</label><div class="seg2" id="segType"></div></div>`);
+    setSeg('segType', [
+      { value: 'appart', label: 'Appartement', hint: '' },
+      { value: 'maison', label: 'Maison', hint: '' },
+    ], state.housing.type, (v)=>{ state.housing.type=v; persist(); render(); });
 
-    const idx = state.subStep.housing || 0;
-    questions[Math.min(idx, questions.length - 1)]();
-    root.appendChild(questionNav('housing', questions.length));
+    root.insertAdjacentHTML('beforeend', `<div class="q"><label>Surface approximative <span class="muted">(ex. studio / T2 / maison 4 pièces)</span></label><div class="seg" id="segSurface"></div></div>`);
+    setSeg('segSurface', [
+      { value: 40, label: '< 50 m²', hint: 'Wi-Fi souvent simple' },
+      { value: 70, label: '50–90 m²', hint: 'À surveiller selon murs' },
+      { value: 110, label: '90–130 m²', hint: 'Répéteur souvent utile' },
+      { value: 150, label: '+ 130 m²', hint: 'Couverture à sécuriser' },
+    ], state.housing.surface, (v)=>{ state.housing.surface=v; persist(); render(); });
+
+    root.insertAdjacentHTML('beforeend', `<div class="q"><label>Étages</label><div class="seg" id="segFloors"></div></div>`);
+    setSeg('segFloors', [
+      { value: 0, label: '0', hint: 'Plain pied / même niveau' },
+      { value: 1, label: '1', hint: 'Wi-Fi à l\'étage' },
+      { value: 2, label: '2+', hint: 'Couverture plus difficile' },
+      { value: 3, label: '3+', hint: 'Cas exigeant' },
+    ], state.housing.floors, (v)=>{ state.housing.floors=v; persist(); render(); });
+
+    root.insertAdjacentHTML('beforeend', `<div class="q"><label>Murs majoritaires</label><div class="seg2" id="segWalls"></div></div>`);
+    setSeg('segWalls', [
+      { value: 'placo', label: 'Placoplâtre', hint: 'Diffusion OK' },
+      { value: 'beton', label: 'Béton / pierre', hint: 'Atténuation forte' },
+    ], state.housing.walls, (v)=>{ state.housing.walls=v; persist(); render(); });
+
+    root.insertAdjacentHTML('beforeend', `<div class="q"><label>Emplacement probable de la box <span class="muted">(salon / entrée / garage)</span></label><div class="seg" id="segPlace"></div></div>`);
+    setSeg('segPlace', [
+      { value: 'central', label: 'Central', hint: 'Meilleur scénario' },
+      { value: 'excentre', label: 'Excentré', hint: 'Couverture à surveiller' },
+      { value: 'garage', label: 'Garage / local', hint: 'Propagation difficile' },
+      { value: 'inconnu', label: 'Je ne sais pas', hint: '' },
+    ], state.housing.boxPlacement, (v)=>{ state.housing.boxPlacement=v; persist(); render(); });
+
+    root.appendChild(navButtons());
   }
 
   function renderInternet(root){
@@ -886,61 +829,54 @@
       state.internetUsage = [...selected];
       persist(); render();
     });
-    root.appendChild(questionNav('internet', 1));
+    root.appendChild(navButtons());
   }
 
   function renderMobile(root){
     root.innerHTML = '';
-    const questions = [
-      () => {
-        const openCard = document.createElement('div');
-        openCard.className = 'card';
-        openCard.innerHTML = `
-          <div class="bd">
-            <div class="h2">Avantage Open</div>
-            <div class="muted">Active la remise Open si le client a une box Orange (déjà ou en souscription).</div>
-            <div class="sp"></div>
-            <button class="btn ${state.hasBox ? 'primary' : ''}" id="btnHasBox" type="button">
-              ${state.hasBox ? '✅ Box Orange : OUI (Open actif)' : '⬜ Box Orange : NON (Open inactif)'}
-            </button>
-          </div>
-        `;
-        root.appendChild(openCard);
-        setTimeout(()=>{ safe('btnHasBox').onclick = () => { state.hasBox = !state.hasBox; persist(); render(); }; });
-      },
-      () => {
-        root.insertAdjacentHTML('beforeend', `<div class="q"><label>Hors Wi-Fi, dans ces situations, lesquelles vous arrivent ?</label><div class="checklist" id="chkMobile"></div></div>`);
-        const selected = new Set(state.mobileContext);
-        setChecks('chkMobile', [
-          { value: 'gps', label: 'GPS / voiture', hint: 'Trafic temps réel + itinéraires' },
-          { value: 'video', label: 'Vidéos / réseaux sociaux', hint: 'Vidéo auto → conso invisible' },
-          { value: 'hotspot', label: 'Partage de connexion', hint: 'PC / tablette → ça monte vite' },
-          { value: 'wifi_unstable', label: 'Wi-Fi parfois indisponible', hint: 'Imprévus / déplacements' },
-          { value: 'zero_stress', label: 'Je veux être tranquille', hint: 'Zéro surveillance' },
-        ], selected, (v)=>{
-          if (selected.has(v)) selected.delete(v); else selected.add(v);
-          state.mobileContext = [...selected];
-          persist(); render();
-        });
-      },
-      () => {
-        root.insertAdjacentHTML('beforeend', `<div class="q"><label>Appareils concernés</label><div class="checklist" id="chkDevices"></div></div>`);
-        const dev = new Set(state.devices);
-        setChecks('chkDevices', [
-          { value: 'watch', label: 'Montre connectée (eSIM)', hint: 'Multi-SIM pertinente' },
-          { value: 'tablet', label: 'Tablette', hint: 'Multi-SIM / data dédiée' },
-          { value: 'car', label: 'Voiture / routeur', hint: 'Connexion embarquée' },
-        ], dev, (v)=>{
-          if (dev.has(v)) dev.delete(v); else dev.add(v);
-          state.devices = [...dev];
-          persist(); render();
-        });
-      },
-    ];
 
-    const idx = state.subStep.mobile || 0;
-    questions[Math.min(idx, questions.length - 1)]();
-    root.appendChild(questionNav('mobile', questions.length));
+    const openCard = document.createElement('div');
+    openCard.className = 'card';
+    openCard.innerHTML = `
+      <div class="bd">
+        <div class="h2">Avantage Open</div>
+        <div class="muted">Active la remise Open si le client a une box Orange (déjà ou en souscription).</div>
+        <div class="sp"></div>
+        <button class="btn ${state.hasBox ? 'primary' : ''}" id="btnHasBox" type="button">
+          ${state.hasBox ? '✅ Box Orange : OUI (Open actif)' : '⬜ Box Orange : NON (Open inactif)'}
+        </button>
+      </div>
+    `;
+    root.appendChild(openCard);
+    setTimeout(()=>{ safe('btnHasBox').onclick = () => { state.hasBox = !state.hasBox; persist(); render(); }; });
+
+    root.insertAdjacentHTML('beforeend', `<div class="q"><label>Hors Wi-Fi, dans ces situations, lesquelles vous arrivent ?</label><div class="checklist" id="chkMobile"></div></div>`);
+    const selected = new Set(state.mobileContext);
+    setChecks('chkMobile', [
+      { value: 'gps', label: 'GPS / voiture', hint: 'Trafic temps réel + itinéraires' },
+      { value: 'video', label: 'Vidéos / réseaux sociaux', hint: 'Vidéo auto → conso invisible' },
+      { value: 'hotspot', label: 'Partage de connexion', hint: 'PC / tablette → ça monte vite' },
+      { value: 'wifi_unstable', label: 'Wi-Fi parfois indisponible', hint: 'Imprévus / déplacements' },
+      { value: 'zero_stress', label: 'Je veux être tranquille', hint: 'Zéro surveillance' },
+    ], selected, (v)=>{
+      if (selected.has(v)) selected.delete(v); else selected.add(v);
+      state.mobileContext = [...selected];
+      persist(); render();
+    });
+
+    root.insertAdjacentHTML('beforeend', `<div class="q"><label>Appareils concernés</label><div class="checklist" id="chkDevices"></div></div>`);
+    const dev = new Set(state.devices);
+    setChecks('chkDevices', [
+      { value: 'watch', label: 'Montre connectée (eSIM)', hint: 'Multi-SIM pertinente' },
+      { value: 'tablet', label: 'Tablette', hint: 'Multi-SIM / data dédiée' },
+      { value: 'car', label: 'Voiture / routeur', hint: 'Connexion embarquée' },
+    ], dev, (v)=>{
+      if (dev.has(v)) dev.delete(v); else dev.add(v);
+      state.devices = [...dev];
+      persist(); render();
+    });
+
+    root.appendChild(navButtons());
   }
 
   function renderSecurity(root){
@@ -1207,13 +1143,8 @@
     const step = STEPS[state.step];
     safe('screenTitle').textContent = step.title;
     safe('screenHint').textContent = step.hint;
-    const questionTotal = questionCount(step.key);
-    const questionIndex = state.subStep?.[step.key] ?? 0;
-    safe('stepCount').textContent = `Étape ${state.step + 1} sur ${STEPS.length} • Question ${Math.min(questionIndex + 1, questionTotal)} / ${questionTotal}`;
-    const totalQuestions = Object.values(SUBSTEP_TOTALS).reduce((sum, n)=>sum+n, 0);
-    const doneBefore = STEPS.slice(0, state.step).reduce((sum, s)=>sum + questionCount(s.key), 0);
-    const doneCurrent = (step.key === 'result') ? 1 : Math.min(questionIndex, questionTotal);
-    const progress = ((doneBefore + doneCurrent) / totalQuestions) * 100;
+    safe('stepCount').textContent = `Étape ${state.step + 1} sur ${STEPS.length}`;
+    const progress = (state.step / (STEPS.length - 1)) * 100;
     safe('progressFill').style.width = `${Math.min(100, Math.max(0, progress))}%`;
 
     const root = safe('screen');
@@ -1275,7 +1206,7 @@
   // ---------------------------
   function init(){
     state = loadFromURL() || loadLocal() || deepClone(DEFAULT_STATE);
-    state = normalizeState(state);
+    if (!state.subStep) state.subStep = deepClone(DEFAULT_STATE.subStep);
 
     // Buttons sidebar
     safe('btnReset').onclick = () => { state = deepClone(DEFAULT_STATE); persist(); render(); };
