@@ -397,7 +397,6 @@
     step: 0,
     mode: 'client',
     hasBox: true,
-    wantsNewMobile: null,
     housing: { surface:null, type:null, floors:null, walls:null, boxPlacement:null },
     internetUsage: [],
     mobileContext: [],
@@ -417,7 +416,7 @@
     { key:'result',   title:'Recommandation', hint:'Une proposition claire et assumée.' },
   ];
 
-  const SUBSTEP_TOTALS = { housing:5, internet:1, mobile:4, security:1, result:1 };
+  const SUBSTEP_TOTALS = { housing:5, internet:1, mobile:3, security:1, result:1 };
 
   const $ = (id) => document.getElementById(id);
 
@@ -516,19 +515,6 @@
     return { primary: tier === 4 ? 'max' : 'up', alternative: tier === 4 ? 'up' : 'livebox' };
   }
 
-  function mobileOfferIdFromState(mobileProfileId, insights){
-    const premiumIntent = state.wantsNewMobile === true;
-    const premiumPotential = insights?.premiumPotential || 'medium';
-    const heavyUse = mobileProfileId === 'serenite' || state.mobileContext.includes('hotspot') || state.mobileContext.includes('video');
-    const multiDevice = state.devices.length >= 2;
-
-    if (premiumIntent && (heavyUse || multiDevice || premiumPotential !== 'low')) return 'm500';
-    if (premiumIntent) return 'm300';
-    if (heavyUse || premiumPotential === 'high') return 'm300';
-    if (mobileProfileId === 'confort') return 'm200';
-    return 'm120';
-  }
-
   function recommendOptions(){
     const opts = [];
     const sec = new Set(state.security);
@@ -579,7 +565,6 @@
     if (state.internetUsage.includes('teletravail')) explicit.push('Besoin de stabilité pro');
     if (state.internetUsage.includes('streaming') || state.internetUsage.includes('famille')) explicit.push('Besoin de capacité simultanée');
     if (state.mobileContext.includes('zero_stress')) explicit.push('Besoin de confort sans surveillance');
-    if (state.wantsNewMobile === true) explicit.push('Projet d\'achat mobile à optimiser');
 
     const rep = recommendedRepeaters(state.housing);
     if (rep >= 1 && !state.internetUsage.includes('famille')) {
@@ -595,26 +580,10 @@
       questionsToAsk.push('Souhaitez-vous protéger le foyer pendant vos absences ?');
     }
 
-    const premiumPositiveSignals = [
-      state.wantsNewMobile === true,
-      state.mobileContext.includes('zero_stress'),
-      state.mobileContext.includes('video'),
-      state.mobileContext.includes('hotspot'),
-      state.devices.length >= 2,
-    ].filter(Boolean).length;
-
-    const premiumPotential = premiumPositiveSignals >= 3 ? 'high' : (premiumPositiveSignals >= 2 ? 'medium' : 'low');
-
-    if (premiumPotential === 'high') {
-      implicit.push({ need:'Le client peut valoriser un forfait premium + avantages mobile', confidence:'élevée' });
-      questionsToAsk.push('Un prix forfait plus élevé vous gêne, ou si le mobile est mieux subventionné c’est intéressant ?');
-    }
-
     return {
       explicit: [...new Set(explicit)],
       implicit,
       questionsToAsk: [...new Set(questionsToAsk)].slice(0, 3),
-      premiumPotential,
     };
   }
 
@@ -691,7 +660,7 @@
   // ---------------------------
   function buildShareURL(){
     const compact = {
-      s: state.step, m: state.mode, bx: state.hasBox, nm: state.wantsNewMobile,
+      s: state.step, m: state.mode, bx: state.hasBox,
       h: state.housing, iu: state.internetUsage, mc: state.mobileContext, se: state.security, d: state.devices
     };
     const payload = btoa(unescape(encodeURIComponent(JSON.stringify(compact))));
@@ -711,7 +680,6 @@
       st.step = Number(obj.s ?? 0);
       st.mode = (obj.m === 'vendeur') ? 'vendeur' : 'client';
       st.hasBox = (obj.bx === false) ? false : true;
-      st.wantsNewMobile = (obj.nm === true) ? true : ((obj.nm === false) ? false : null);
       st.housing = obj.h || st.housing;
       st.internetUsage = obj.iu || [];
       st.mobileContext = obj.mc || [];
@@ -812,8 +780,7 @@
     if (stepKey === 'housing' && idx === 3 && !state.housing.walls) return 'Choisissez le type de murs majoritaire.';
     if (stepKey === 'housing' && idx === 4 && !state.housing.boxPlacement) return 'Précisez l\'emplacement probable de la box.';
     if (stepKey === 'internet' && state.internetUsage.length === 0) return 'Sélectionnez au moins un usage internet.';
-    if (stepKey === 'mobile' && idx === 0 && state.wantsNewMobile == null) return 'Indiquez si un achat de mobile est prévu.';
-    if (stepKey === 'mobile' && idx === 2 && state.mobileContext.length === 0) return 'Sélectionnez au moins une situation mobile.';
+    if (stepKey === 'mobile' && idx === 1 && state.mobileContext.length === 0) return 'Sélectionnez au moins une situation mobile.';
     if (stepKey === 'security' && state.security.length === 0) return 'Sélectionnez au moins un besoin de protection.';
     return '';
   }
@@ -869,7 +836,6 @@
     normalized.step = clamp(Number(raw.step ?? 0) || 0, 0, STEPS.length - 1);
     normalized.mode = raw.mode === 'vendeur' ? 'vendeur' : 'client';
     normalized.hasBox = raw.hasBox !== false;
-    normalized.wantsNewMobile = (raw.wantsNewMobile === true) ? true : ((raw.wantsNewMobile === false) ? false : null);
 
     normalized.housing.type = ['appart','maison'].includes(raw.housing?.type) ? raw.housing.type : null;
     normalized.housing.surface = [40,70,110,150].includes(Number(raw.housing?.surface)) ? Number(raw.housing.surface) : null;
@@ -966,13 +932,6 @@
     root.innerHTML = '';
     const questions = [
       () => {
-        root.insertAdjacentHTML('beforeend', `<div class="q"><label>Projet mobile</label><div class="seg2" id="segMobileProject"></div></div>`);
-        setSeg('segMobileProject', [
-          { value: true, label: 'Oui, achat mobile prévu', hint: 'On privilégie un forfait avec gros avantage mobile' },
-          { value: false, label: 'Non, pas de projet mobile', hint: 'On reste sur besoin data pur' },
-        ], state.wantsNewMobile, (v)=>{ state.wantsNewMobile = v; persist(); render(); });
-      },
-      () => {
         const openCard = document.createElement('div');
         openCard.className = 'card';
         openCard.innerHTML = `
@@ -1042,13 +1001,12 @@
 
   function renderResult(root){
     const res = buildResult();
-    const insights = buildLiveInsights();
     const primary = OFFERS.internet.find(o => o.id === res.primaryBox);
     const alt = OFFERS.internet.find(o => o.id === res.altBox);
     const mp = OFFERS.mobileProfiles.find(p => p.id === res.mobileProfile);
 
-    // Mapping piloté par profil + intention d'achat mobile + signaux IA
-    const mobileOfferId = mobileOfferIdFromState(res.mobileProfile, insights);
+    // Mapping V1 profil → forfait
+    const mobileOfferId = (res.mobileProfile === 'essentiel') ? 'm20' : (res.mobileProfile === 'confort' ? 'm120' : 'm200');
     const mOffer = OFFERS.mobileOffers.find(m => m.id === mobileOfferId);
     const hasMobile = !!mOffer;
 
@@ -1143,7 +1101,6 @@
           <div class="badge"><b>${escapeHtml(mp.name)}</b> — ${escapeHtml(mp.desc)}</div>
           ${priceBadge}
         </div>
-        ${state.wantsNewMobile ? `<div class="badge" style="margin-top:8px"><b>Avantage mobile</b> Les forfaits 200/300/500 Go ouvrent des réductions à l'achat du mobile.</div>` : ``}
         ${state.mode === 'vendeur' ? `<ul class="list"><li>Argument clé: confort et sérénité au quotidien.</li></ul>` : ``}
         ${mOffer?.price?.promoNote ? `<div class="muted" style="margin-top:8px">Note : ${escapeHtml(mOffer.price.promoNote)}</div>` : ''}
       </div>
@@ -1206,7 +1163,6 @@
     lines.push('—');
     lines.push(`Mode: ${state.mode.toUpperCase()}`);
     lines.push(`Box Orange (Open): ${state.hasBox ? 'OUI' : 'NON'}`);
-    lines.push(`Projet d'achat mobile: ${state.wantsNewMobile === true ? 'OUI' : (state.wantsNewMobile === false ? 'NON' : 'Non précisé')}`);
     lines.push(`Internet conseillé: ${primary.name} (Répéteurs: ${res.rep})`);
     lines.push(`Prix: ${priceLineWithDiscount(primary, packDisc)}${packDisc ? ` (Pack −${packDisc}€/mois)` : ''}`);
     lines.push(`Alternative: ${alt.name} — ${priceLine(alt)}`);
@@ -1311,7 +1267,6 @@
     const tags = safe('tags');
     tags.innerHTML = '';
     tags.appendChild(badge(state.hasBox ? 'Open: OUI' : 'Open: NON'));
-    if (state.wantsNewMobile != null) tags.appendChild(badge(state.wantsNewMobile ? 'Projet mobile: OUI' : 'Projet mobile: NON'));
     if (state.housing.surface) tags.appendChild(badge(`${state.housing.surface} m²`));
     if (state.housing.type) tags.appendChild(badge(state.housing.type === 'maison' ? 'Maison' : 'Appartement'));
     if (state.housing.floors != null) tags.appendChild(badge(`${state.housing.floors} étage(s)`));
@@ -1338,8 +1293,6 @@
       <div class="sp"></div>
       <div class="muted">Besoins non exprimés (probables)</div>
       ${ai.implicit.length ? `<ul>${ai.implicit.map(x=>`<li>${escapeHtml(x.need)} <b>(${escapeHtml(x.confidence)})</b></li>`).join('')}</ul>` : `<div class="muted">Aucun signal fort pour l'instant.</div>`}
-      <div class="sp"></div>
-      <div class="muted">Potentiel premium mobile: <b>${ai.premiumPotential === 'high' ? 'élevé' : (ai.premiumPotential === 'medium' ? 'moyen' : 'faible')}</b></div>
       ${ai.questionsToAsk.length ? `<div class="sp"></div><div class="muted">Questions à poser</div><ul>${ai.questionsToAsk.map(q=>`<li>${escapeHtml(q)}</li>`).join('')}</ul>` : ''}
     `;
 
