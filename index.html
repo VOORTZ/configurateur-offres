@@ -278,7 +278,7 @@
           <div class="sp"></div>
           <div class="stepmeta">
             <span id="stepCount">Étape —</span>
-            <span id="stepTip">Répondez simplement, sans réfléchir longtemps</span>
+            <span>Répondez simplement, sans réfléchir longtemps</span>
           </div>
           <div class="progress"><div id="progressFill" style="width:0%"></div></div>
           <div class="h1" id="screenTitle">—</div>
@@ -1059,66 +1059,6 @@
 
     root.innerHTML = '';
 
-    if (state.mode === 'client') {
-      const recClient = document.createElement('div');
-      recClient.className = 'rec';
-      recClient.innerHTML = `
-        <div class="big">Votre recommandation</div>
-        <div style="margin-top:8px">
-          <div class="big" style="font-size:18px">${escapeHtml(primary.name)}</div>
-          <div class="price" style="margin-top:4px">${priceLineWithDiscount(primary, packDisc)}</div>
-          ${packDisc ? `<div class="muted" style="margin-top:4px">Pack Open: −${packDisc}€/mois</div>` : ``}
-        </div>
-        <div class="sp"></div>
-        <div class="row">${primary.includes.slice(0, 3).map(x=>`<span class="badge"><b>Inclus</b> ${escapeHtml(x)}</span>`).join('')}</div>
-      `;
-      root.appendChild(recClient);
-
-      const mobClient = document.createElement('div');
-      mobClient.className = 'card';
-      mobClient.style.marginTop = '12px';
-
-      let mobileLine = 'Forfait mobile à confirmer en boutique';
-      if (mOffer) {
-        const p = mobilePriceWithOpen(mOffer);
-        mobileLine = `${escapeHtml(mOffer.name)} • ${euro(state.hasBox && p.discount > 0 ? p.open : p.std)}/mois`;
-      }
-
-      mobClient.innerHTML = `
-        <div class="bd">
-          <div class="h2">Mobile recommandé</div>
-          <div class="badge"><b>${escapeHtml(mp.name)}</b> — ${escapeHtml(mp.desc)}</div>
-          <div class="sp"></div>
-          <div class="badge"><b>${mobileLine}</b></div>
-          ${state.wantsNewMobile ? `<div class="muted" style="margin-top:8px">Les forfaits 200/300/500 Go peuvent inclure un avantage à l'achat mobile.</div>` : ``}
-        </div>
-      `;
-      root.appendChild(mobClient);
-
-      const navClient = document.createElement('div');
-      navClient.className = 'btnbar';
-      navClient.innerHTML = `
-        <button class="btn" id="btnPrev" type="button">Retour</button>
-        <button class="btn primary" id="btnCopy" type="button">Copier le récap</button>
-      `;
-      root.appendChild(navClient);
-
-      setTimeout(()=>{
-        safe('btnPrev').onclick = () => {
-          state.step = Math.max(0, state.step-1);
-          const prevKey = STEPS[state.step].key;
-          state.subStep[prevKey] = questionCount(prevKey) - 1;
-          persist(); render();
-        };
-        safe('btnCopy').onclick = () => {
-          navigator.clipboard?.writeText(buildPlainTextRecap(res, primary, alt, mp, mOffer, opts, packDisc));
-          toast('Récap copié dans le presse-papiers.');
-        };
-      });
-
-      return;
-    }
-
     const rec = document.createElement('div');
     rec.className = 'rec';
     rec.innerHTML = `
@@ -1344,13 +1284,10 @@
 
     const step = STEPS[state.step];
     safe('screenTitle').textContent = step.title;
-    safe('screenHint').textContent = (state.mode === 'vendeur') ? step.hint : '';
+    safe('screenHint').textContent = step.hint;
     const questionTotal = questionCount(step.key);
     const questionIndex = state.subStep?.[step.key] ?? 0;
     safe('stepCount').textContent = `Étape ${state.step + 1} sur ${STEPS.length} • Question ${Math.min(questionIndex + 1, questionTotal)} / ${questionTotal}`;
-    safe('stepTip').textContent = (state.mode === 'vendeur')
-      ? 'Répondez simplement, sans réfléchir longtemps'
-      : 'Répondez simplement';
     const totalQuestions = Object.values(SUBSTEP_TOTALS).reduce((sum, n)=>sum+n, 0);
     const doneBefore = STEPS.slice(0, state.step).reduce((sum, s)=>sum + questionCount(s.key), 0);
     const doneCurrent = (step.key === 'result') ? 1 : Math.min(questionIndex, questionTotal);
@@ -1385,18 +1322,13 @@
 
     const feedback = safe('clientFeedback');
     const ai = buildLiveInsights();
-    feedback.innerHTML = (state.mode === 'vendeur')
-      ? `
-        <span>📶 Wi‑Fi : <b>${scoreLabel(res.wifiScore)}</b></span>
-        <span>📡 Répéteurs : <b>${res.rep}</b></span>
-        <span>⚡️ Internet : <b>${res.intensity}</b></span>
-        <span>📱 Mobile : <b>${mp ? mp.name : '—'}</b></span>
-        ${ai.implicit[0] ? `<span>🧠 Besoin détecté : <b>${escapeHtml(ai.implicit[0].need)}</b></span>` : ''}
-      `
-      : `
-        <span>✅ Parcours simple : une question à la fois</span>
-        <span>🎯 Recommandation finale adaptée à votre besoin</span>
-      `;
+    feedback.innerHTML = `
+      <span>📶 Wi‑Fi : <b>${scoreLabel(res.wifiScore)}</b></span>
+      <span>📡 Répéteurs : <b>${res.rep}</b></span>
+      <span>⚡️ Internet : <b>${res.intensity}</b></span>
+      <span>📱 Mobile : <b>${mp ? mp.name : '—'}</b></span>
+      ${ai.implicit[0] ? `<span>🧠 Besoin détecté : <b>${escapeHtml(ai.implicit[0].need)}</b></span>` : ''}
+    `;
 
     const aiBox = safe('aiInsights');
     aiBox.innerHTML = `
