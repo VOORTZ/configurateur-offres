@@ -375,21 +375,48 @@
       { id:'m120', name:'Série Spéciale 120Go 5G', commitmentMonths:0, price:{ intro:24.99, after:null, promoNote:'Promo possible (codes / périodes)' }, openDiscount:5,
         highlights:['Appels/SMS/MMS illimités','120Go 5G (selon conditions)']
       },
-      { id:'m200', name:'Forfait 200Go 5G', commitmentMonths:24, price:{ intro:37.99, after:47.99, promoNote:'Engagement 24 mois (prix indicatif)' }, openDiscount:8,
+      { id:'m200', name:'Forfait 200Go 5G', commitmentMonths:0, price:{ intro:47.99, after:null, promoNote:'Tarif de référence Orange.fr (hors remises Open/internet)' }, openDiscount:8,
         highlights:['Appels/SMS/MMS illimités','200Go 5G (selon conditions)']
       },
-      { id:'m300', name:'Forfait 300Go 5G', commitmentMonths:24, price:{ intro:44.99, after:54.99, promoNote:'Engagement 24 mois (prix indicatif)' }, openDiscount:15,
+      { id:'m300', name:'Forfait 300Go 5G', commitmentMonths:0, price:{ intro:67.99, after:null, promoNote:'Tarif de référence Orange.fr (hors remises Open/internet)' }, openDiscount:15,
         highlights:['Gros usages','Partage de connexion intensif','Famille']
       },
-      { id:'m500', name:'Forfait 500Go 5G+', commitmentMonths:24, price:{ intro:59.99, after:69.99, promoNote:'Engagement 24 mois (prix indicatif)' }, openDiscount:15,
+      { id:'m500', name:'Forfait 500Go 5G+', commitmentMonths:0, price:{ intro:84.99, after:null, promoNote:'Tarif de référence Orange.fr (hors remises Open/internet)' }, openDiscount:15,
         highlights:['Premium','Multi-appareils','Très gros usages']
       },
     ],
 
+    handsets: [
+      { id:'s25u', brand:'Samsung', name:'Galaxy S25 Ultra 5G+', upfront:279, oldPrice:479, monthly24:13.42 },
+      { id:'iphone-air', brand:'Apple', name:'iPhone Air', upfront:89, oldPrice:189, monthly24:null },
+      { id:'pixel10proxl', brand:'Google', name:'Pixel 10 Pro XL', upfront:39, oldPrice:169, monthly24:null },
+      { id:'iphone17pro', brand:'Apple', name:'iPhone 17 Pro', upfront:429, oldPrice:null, monthly24:20.63 },
+      { id:'honor-v5', brand:'HONOR', name:'Magic V5 5G+', upfront:559, oldPrice:709, monthly24:26.89 },
+      { id:'xiaomi15ultra', brand:'Xiaomi', name:'15 Ultra', upfront:349, oldPrice:null, monthly24:14.54 },
+      { id:'s25', brand:'Samsung', name:'Galaxy S25 5G+', upfront:5, oldPrice:null, monthly24:null },
+      { id:'s25plus', brand:'Samsung', name:'Galaxy S25 Plus 5G+', upfront:29, oldPrice:179, monthly24:null },
+      { id:'s25fe', brand:'Samsung', name:'Galaxy S25 FE 5G+', upfront:5, oldPrice:null, monthly24:null },
+      { id:'zfold7', brand:'Samsung', name:'Galaxy Z Fold7 5G+', upfront:929, oldPrice:null, monthly24:44.68 },
+      { id:'zflip7', brand:'Samsung', name:'Galaxy Z Flip7 5G+', upfront:249, oldPrice:null, monthly24:null },
+      { id:'iphone16', brand:'Apple', name:'iPhone 16', upfront:5, oldPrice:19, monthly24:null },
+      { id:'iphone16plus', brand:'Apple', name:'iPhone 16 Plus', upfront:79, oldPrice:129, monthly24:null },
+      { id:'iphone17promax', brand:'Apple', name:'iPhone 17 Pro Max', upfront:569, oldPrice:null, monthly24:27.37 },
+      { id:'iphone15pro', brand:'Apple', name:'iPhone 15 Pro', upfront:249, oldPrice:null, monthly24:null },
+      { id:'pixel10pro', brand:'Google', name:'Pixel 10 Pro', upfront:5, oldPrice:39, monthly24:null },
+      { id:'pixel10pfold', brand:'Google', name:'Pixel 10 Pro Fold 5G+', upfront:529, oldPrice:649, monthly24:25.44 },
+      { id:'pixel9pfold', brand:'Google', name:'Pixel 9 Pro Fold', upfront:639, oldPrice:null, monthly24:30.73 },
+      { id:'redmi-note15-pro5g', brand:'Xiaomi', name:'Redmi Note 15 Pro 5G', upfront:5, oldPrice:19, monthly24:null },
+      { id:'redmi-note15-4g', brand:'Xiaomi', name:'Redmi Note 15 4G', upfront:5, oldPrice:null, monthly24:null },
+      { id:'redmi-note15-5g', brand:'Xiaomi', name:'Redmi Note 15 5G', upfront:5, oldPrice:null, monthly24:null },
+      { id:'redmi-note15proplus', brand:'Xiaomi', name:'Redmi Note 15 Pro Plus 5G', upfront:5, oldPrice:null, monthly24:null },
+      { id:'honor-magic7pro', brand:'HONOR', name:'Magic7 Pro 5G+', upfront:199, oldPrice:null, monthly24:null },
+      { id:'motorola-g56', brand:'Motorola', name:'Moto g56 5G', upfront:5, oldPrice:null, monthly24:null },
+    ],
+
     options: [
-      { id:'maison_protegee', name:'Maison Protégée', when:'Maison / absences / RDC', script:'Absences + maison → tranquillité d\'esprit (dissuasion + intervention).' },
-      { id:'cybersecure', name:'Cybersecure', when:'Enfants / télétravail / PC pro', script:'Ce n\'est pas technique : c\'est protéger la famille et les appareils.' },
-      { id:'multisim', name:'Multi-SIM', when:'Montre / tablette / voiture / hotspot', script:'Même forfait, plusieurs appareils : montre, tablette, voiture.' },
+      { id:'maison_protegee', name:'Maison Protégée', when:'Maison / absences / RDC', script:'Absences + maison → tranquillité d\'esprit (dissuasion + intervention).', priceMonthly:19.99 },
+      { id:'cybersecure', name:'Cybersecure', when:'Enfants / télétravail / PC pro', script:'Ce n\'est pas technique : c\'est protéger la famille et les appareils.', priceMonthly:7.99 },
+      { id:'multisim', name:'Multi-SIM', when:'Montre / tablette / voiture / hotspot', script:'Même forfait, plusieurs appareils : montre, tablette, voiture.', priceMonthly:5.00 },
     ]
   };
 
@@ -398,6 +425,8 @@
     mode: 'client',
     hasBox: true,
     wantsNewMobile: null,
+    selectedHandsetBrand: null,
+    selectedHandsetId: null,
     housing: { surface:null, type:null, floors:null, walls:null, boxPlacement:null },
     internetUsage: [],
     mobileContext: [],
@@ -417,7 +446,7 @@
     { key:'result',   title:'Recommandation', hint:'Une proposition claire et assumée.' },
   ];
 
-  const SUBSTEP_TOTALS = { housing:5, internet:1, mobile:4, security:1, result:1 };
+  const SUBSTEP_TOTALS = { housing:5, internet:1, mobile:5, security:1, result:1 };
 
   const $ = (id) => document.getElementById(id);
 
@@ -527,6 +556,14 @@
     if (heavyUse || premiumPotential === 'high') return 'm300';
     if (mobileProfileId === 'confort') return 'm200';
     return 'm120';
+  }
+
+  function selectedHandset(){
+    return OFFERS.handsets.find(h => h.id === state.selectedHandsetId) || null;
+  }
+
+  function handsetBrands(){
+    return [...new Set(OFFERS.handsets.map(h => h.brand))].sort((a,b)=>a.localeCompare(b, 'fr'));
   }
 
   function recommendOptions(){
@@ -659,8 +696,8 @@
 
   function priceLine(o){
     if (!o?.price) return '—';
-    if (o.price.after == null) return `${euro(Number(o.price.intro))}/mois`;
-    return `${euro(Number(o.price.intro))}/mois (12 mois) puis ${euro(Number(o.price.after))}/mois`;
+    const displayed = (o.price.after == null) ? Number(o.price.intro) : Number(o.price.after);
+    return `${euro(displayed)}/mois`;
   }
 
   // Pack: Up/Max + forfait => -5€ sur la box
@@ -674,8 +711,17 @@
     const d = Number(discount || 0);
     const intro = Math.max(Number(o.price.intro) - d, 0);
     const after = (o.price.after == null) ? null : Math.max(Number(o.price.after) - d, 0);
-    if (after == null) return `${euro(intro)}/mois`;
-    return `${euro(intro)}/mois (12 mois) puis ${euro(after)}/mois`;
+    const displayed = (after == null) ? intro : after;
+    return `${euro(displayed)}/mois`;
+  }
+
+  function priceLineBeforeAfterDiscountHTML(o, discount){
+    if (!o?.price) return '—';
+    const d = Number(discount || 0);
+    const base = (o.price.after == null) ? Number(o.price.intro) : Number(o.price.after);
+    const discounted = Math.max(base - d, 0);
+    if (d <= 0) return `${euro(base)}/mois`;
+    return `<span style="text-decoration:line-through; opacity:.7">${euro(base)}/mois</span> <b style="color:#ffe3d2">${euro(discounted)}/mois</b> <span class="muted">(−${d}€)</span>`;
   }
 
   function mobilePriceWithOpen(offer){
@@ -686,12 +732,36 @@
     return { std, open, discount: state.hasBox ? d : 0 };
   }
 
+  function internetDisplayedMonthly(offer, packDisc){
+    if (!offer?.price) return 0;
+    const base = (offer.price.after == null) ? Number(offer.price.intro) : Number(offer.price.after);
+    return Math.max(base - Number(packDisc || 0), 0);
+  }
+
+  function totalOfferMonthly(primaryOffer, mobileOffer, selectedOptions, packDisc){
+    const internetMonthly = internetDisplayedMonthly(primaryOffer, packDisc);
+    const mobilePricing = mobilePriceWithOpen(mobileOffer);
+    const mobileMonthly = Number.isFinite(mobilePricing.open) ? mobilePricing.open : 0;
+    const optionsMonthly = selectedOptions.reduce((sum, o)=>sum + Number(o.priceMonthly || 0), 0);
+    return {
+      internetMonthly,
+      mobileMonthly,
+      optionsMonthly,
+      totalMonthly: internetMonthly + mobileMonthly + optionsMonthly,
+    };
+  }
+
+  function handsetDisplayedPrice(handset){
+    if (!handset) return '—';
+    return `${euro(handset.upfront)} comptant`;
+  }
+
   // ---------------------------
   // Local/URL state
   // ---------------------------
   function buildShareURL(){
     const compact = {
-      s: state.step, m: state.mode, bx: state.hasBox, nm: state.wantsNewMobile,
+      s: state.step, m: state.mode, bx: state.hasBox, nm: state.wantsNewMobile, hb: state.selectedHandsetBrand, hm: state.selectedHandsetId,
       h: state.housing, iu: state.internetUsage, mc: state.mobileContext, se: state.security, d: state.devices
     };
     const payload = btoa(unescape(encodeURIComponent(JSON.stringify(compact))));
@@ -712,6 +782,8 @@
       st.mode = (obj.m === 'vendeur') ? 'vendeur' : 'client';
       st.hasBox = (obj.bx === false) ? false : true;
       st.wantsNewMobile = (obj.nm === true) ? true : ((obj.nm === false) ? false : null);
+      st.selectedHandsetBrand = obj.hb || null;
+      st.selectedHandsetId = obj.hm || null;
       st.housing = obj.h || st.housing;
       st.internetUsage = obj.iu || [];
       st.mobileContext = obj.mc || [];
@@ -814,6 +886,8 @@
     if (stepKey === 'internet' && state.internetUsage.length === 0) return 'Sélectionnez au moins un usage internet.';
     if (stepKey === 'mobile' && idx === 0 && state.wantsNewMobile == null) return 'Indiquez si un achat de mobile est prévu.';
     if (stepKey === 'mobile' && idx === 2 && state.mobileContext.length === 0) return 'Sélectionnez au moins une situation mobile.';
+    if (stepKey === 'mobile' && idx === 4 && state.wantsNewMobile === true && !state.selectedHandsetBrand) return 'Sélectionnez d\'abord la marque du mobile.';
+    if (stepKey === 'mobile' && idx === 4 && state.wantsNewMobile === true && !state.selectedHandsetId) return 'Sélectionnez un mobile souhaité pour finaliser le diagnostic.';
     if (stepKey === 'security' && state.security.length === 0) return 'Sélectionnez au moins un besoin de protection.';
     return '';
   }
@@ -870,6 +944,12 @@
     normalized.mode = raw.mode === 'vendeur' ? 'vendeur' : 'client';
     normalized.hasBox = raw.hasBox !== false;
     normalized.wantsNewMobile = (raw.wantsNewMobile === true) ? true : ((raw.wantsNewMobile === false) ? false : null);
+    normalized.selectedHandsetBrand = handsetBrands().includes(raw.selectedHandsetBrand) ? raw.selectedHandsetBrand : null;
+    normalized.selectedHandsetId = OFFERS.handsets.some(h=>h.id === raw.selectedHandsetId) ? raw.selectedHandsetId : null;
+    if (normalized.selectedHandsetId) {
+      const handset = OFFERS.handsets.find(h=>h.id===normalized.selectedHandsetId);
+      normalized.selectedHandsetBrand = handset?.brand || normalized.selectedHandsetBrand;
+    }
 
     normalized.housing.type = ['appart','maison'].includes(raw.housing?.type) ? raw.housing.type : null;
     normalized.housing.surface = [40,70,110,150].includes(Number(raw.housing?.surface)) ? Number(raw.housing.surface) : null;
@@ -970,7 +1050,7 @@
         setSeg('segMobileProject', [
           { value: true, label: 'Oui, achat mobile prévu', hint: 'On privilégie un forfait avec gros avantage mobile' },
           { value: false, label: 'Non, pas de projet mobile', hint: 'On reste sur besoin data pur' },
-        ], state.wantsNewMobile, (v)=>{ state.wantsNewMobile = v; persist(); render(); });
+        ], state.wantsNewMobile, (v)=>{ state.wantsNewMobile = v; if (v !== true) { state.selectedHandsetBrand = null; state.selectedHandsetId = null; } persist(); render(); });
       },
       () => {
         const openCard = document.createElement('div');
@@ -1016,6 +1096,48 @@
           persist(); render();
         });
       },
+      () => {
+        if (state.wantsNewMobile !== true) {
+          root.insertAdjacentHTML('beforeend', `<div class="q"><label>Mobile souhaité</label><div class="muted">Pas d'achat mobile prévu.</div></div>`);
+          state.selectedHandsetBrand = null;
+          state.selectedHandsetId = null;
+          return;
+        }
+
+        root.insertAdjacentHTML('beforeend', `
+          <div class="q"><label>Marque souhaitée</label><div class="seg2" id="segHandsetBrand"></div></div>
+          <div class="q"><label>Modèle souhaité (Orange.fr)</label><div class="checklist" id="chkHandsets"></div></div>
+        `);
+
+        const brands = handsetBrands().map(b => ({ value:b, label:b, hint:'' }));
+        setSeg('segHandsetBrand', brands, state.selectedHandsetBrand, (brand)=>{
+          state.selectedHandsetBrand = brand;
+          const selected = OFFERS.handsets.find(h=>h.id===state.selectedHandsetId);
+          if (!selected || selected.brand !== brand) state.selectedHandsetId = null;
+          persist(); render();
+        });
+
+        const visibleHandsets = state.selectedHandsetBrand
+          ? OFFERS.handsets.filter(h=>h.brand===state.selectedHandsetBrand)
+          : [];
+
+        if (!state.selectedHandsetBrand) {
+          safe('chkHandsets').innerHTML = '<div class="muted">Sélectionnez une marque pour voir les modèles.</div>';
+          return;
+        }
+
+        const selected = state.selectedHandsetId;
+        const items = visibleHandsets.map(h => ({
+          value: h.id,
+          label: `${h.brand} ${h.name}`,
+          hint: 'Prix affiché au récapitulatif selon l\'offre proposée',
+        }));
+        const selectedSet = new Set(selected ? [selected] : []);
+        setChecks('chkHandsets', items, selectedSet, (v)=>{
+          state.selectedHandsetId = (state.selectedHandsetId === v) ? null : v;
+          persist(); render();
+        });
+      },
     ];
 
     const idx = state.subStep.mobile || 0;
@@ -1046,6 +1168,7 @@
     const primary = OFFERS.internet.find(o => o.id === res.primaryBox);
     const alt = OFFERS.internet.find(o => o.id === res.altBox);
     const mp = OFFERS.mobileProfiles.find(p => p.id === res.mobileProfile);
+    const handset = selectedHandset();
 
     // Mapping piloté par profil + intention d'achat mobile + signaux IA
     const mobileOfferId = mobileOfferIdFromState(res.mobileProfile, insights);
@@ -1056,18 +1179,34 @@
     const packDisc = packBoxDiscount(primary?.id, hasMobile);
 
     const opts = res.options.map(id => OFFERS.options.find(o => o.id === id)).filter(Boolean);
+    const totals = totalOfferMonthly(primary, mOffer, opts, packDisc);
+    const totalDay = totals.totalMonthly / 31;
 
     root.innerHTML = '';
+
+    const totalCard = document.createElement('div');
+    totalCard.className = 'card';
+    totalCard.innerHTML = `
+      <div class="bd">
+        <div class="h2">Budget total estimé</div>
+        <div class="row" style="align-items:center; justify-content:space-between">
+          <div class="badge"><b>${euro(totalDay)}</b> / jour</div>
+          <div class="badge"><b>${euro(totals.totalMonthly)}</b> / mois</div>
+        </div>
+        <div class="muted" style="margin-top:8px">Inclut Internet + mobile + options sélectionnées (calcul sur 31 jours).</div>
+      </div>
+    `;
+    root.appendChild(totalCard);
 
     if (state.mode === 'client') {
       const recClient = document.createElement('div');
       recClient.className = 'rec';
+      recClient.style.marginTop = '12px';
       recClient.innerHTML = `
         <div class="big">Votre recommandation</div>
         <div style="margin-top:8px">
           <div class="big" style="font-size:18px">${escapeHtml(primary.name)}</div>
-          <div class="price" style="margin-top:4px">${priceLineWithDiscount(primary, packDisc)}</div>
-          ${packDisc ? `<div class="muted" style="margin-top:4px">Pack Open: −${packDisc}€/mois</div>` : ``}
+          <div class="price" style="margin-top:4px">${priceLineBeforeAfterDiscountHTML(primary, packDisc)}</div>
         </div>
         <div class="sp"></div>
         <div class="row">${primary.includes.slice(0, 3).map(x=>`<span class="badge"><b>Inclus</b> ${escapeHtml(x)}</span>`).join('')}</div>
@@ -1084,12 +1223,18 @@
         mobileLine = `${escapeHtml(mOffer.name)} • ${euro(state.hasBox && p.discount > 0 ? p.open : p.std)}/mois`;
       }
 
+      let handsetLine = '';
+      if (handset) {
+        handsetLine = `<div class="badge" style="margin-top:8px"><b>${escapeHtml(handset.brand)} ${escapeHtml(handset.name)}</b> • Prix proposé avec votre forfait : ${handsetDisplayedPrice(handset)}${handset.oldPrice ? ` <span class="muted">(au lieu de ${euro(handset.oldPrice)})</span>` : ''}</div>`;
+      }
+
       mobClient.innerHTML = `
         <div class="bd">
           <div class="h2">Mobile recommandé</div>
           <div class="badge"><b>${escapeHtml(mp.name)}</b> — ${escapeHtml(mp.desc)}</div>
           <div class="sp"></div>
           <div class="badge"><b>${mobileLine}</b></div>
+          ${handsetLine}
           ${state.wantsNewMobile ? `<div class="muted" style="margin-top:8px">Les forfaits 200/300/500 Go peuvent inclure un avantage à l'achat mobile.</div>` : ``}
         </div>
       `;
@@ -1121,6 +1266,7 @@
 
     const rec = document.createElement('div');
     rec.className = 'rec';
+    rec.style.marginTop = '12px';
     rec.innerHTML = `
       <div class="big">Offre internet recommandée</div>
       <div style="display:flex; justify-content:space-between; gap:12px; margin-top:8px; flex-wrap:wrap">
@@ -1129,8 +1275,7 @@
           <div class="muted" style="margin-top:4px">Le meilleur choix pour ce besoin.</div>
         </div>
         <div class="price">
-          ${priceLineWithDiscount(primary, packDisc)} • Répéteurs: ${res.rep}
-          ${packDisc ? ` <span class="muted">(Pack −${packDisc}€/mois)</span>` : ``}
+          ${priceLineBeforeAfterDiscountHTML(primary, packDisc)} • Répéteurs: ${res.rep}
         </div>
       </div>
 
@@ -1151,7 +1296,7 @@
                 <td style="padding:10px; border-bottom:1px solid var(--border); color:var(--muted)">Prix</td>
                 <td style="padding:10px; border-bottom:1px solid var(--border)">${priceLine(alt)}</td>
                 <td style="padding:10px; border-bottom:1px solid var(--border)">
-                  ${priceLineWithDiscount(primary, packDisc)}${packDisc ? ` <span class="muted">(Pack −${packDisc}€)</span>` : ``}
+                  ${priceLineBeforeAfterDiscountHTML(primary, packDisc)}
                 </td>
               </tr>
               <tr>
@@ -1203,9 +1348,10 @@
           <div class="badge"><b>${escapeHtml(mp.name)}</b> — ${escapeHtml(mp.desc)}</div>
           ${priceBadge}
         </div>
+        ${handset ? `<div class="badge" style="margin-top:8px"><b>Mobile choisi</b> ${escapeHtml(handset.brand)} ${escapeHtml(handset.name)} • Prix proposé avec ce forfait : ${handsetDisplayedPrice(handset)}${handset.oldPrice ? ` <span class="muted">(au lieu de ${euro(handset.oldPrice)})</span>` : ''}</div>` : ''}
         ${state.wantsNewMobile ? `<div class="badge" style="margin-top:8px"><b>Avantage mobile</b> Les forfaits 200/300/500 Go ouvrent des réductions à l'achat du mobile.</div>` : ``}
         ${state.mode === 'vendeur' ? `<ul class="list"><li>Argument clé: confort et sérénité au quotidien.</li></ul>` : ``}
-        ${mOffer?.price?.promoNote ? `<div class="muted" style="margin-top:8px">Note : ${escapeHtml(mOffer.price.promoNote)}</div>` : ''}
+        ${(state.mode === 'vendeur' && mOffer?.price?.promoNote) ? `<div class="muted" style="margin-top:8px">Note vendeur : ${escapeHtml(mOffer.price.promoNote)}</div>` : ''}
       </div>
     `;
     root.appendChild(mob);
@@ -1217,7 +1363,7 @@
     opt.innerHTML = `
       <div class="bd">
         <div class="h2">Options utiles</div>
-        ${opts.length ? opts.map(o=>`<div class="badge" style="margin:6px 0"><b>${escapeHtml(o.name)}</b> — ${escapeHtml(o.when)}</div>`).join('') : `<div class="muted">Aucune option prioritaire.</div>`}
+        ${opts.length ? opts.map(o=>`<div class="badge" style="margin:6px 0"><b>${escapeHtml(o.name)}</b> — ${escapeHtml(o.when)}${o.priceMonthly ? ` • +${euro(o.priceMonthly)}/mois` : ''}</div>`).join('') : `<div class="muted">Aucune option prioritaire.</div>`}
         ${opts.length ? `<ul class="list">${opts.map(o=>`<li>${escapeHtml(o.script)}</li>`).join('')}</ul>` : ''}
       </div>
     `;
@@ -1262,16 +1408,26 @@
 
   function buildPlainTextRecap(res, primary, alt, mp, mOffer, opts, packDisc){
     const lines = [];
+    const handset = selectedHandset();
+    const totals = totalOfferMonthly(primary, mOffer, opts, packDisc);
     lines.push('RÉCAP CONFIGURATEUR');
     lines.push('—');
     lines.push(`Mode: ${state.mode.toUpperCase()}`);
     lines.push(`Box Orange (Open): ${state.hasBox ? 'OUI' : 'NON'}`);
     lines.push(`Projet d'achat mobile: ${state.wantsNewMobile === true ? 'OUI' : (state.wantsNewMobile === false ? 'NON' : 'Non précisé')}`);
     lines.push(`Internet conseillé: ${primary.name} (Répéteurs: ${res.rep})`);
-    lines.push(`Prix: ${priceLineWithDiscount(primary, packDisc)}${packDisc ? ` (Pack −${packDisc}€/mois)` : ''}`);
+    if (packDisc > 0) {
+      const base = (primary?.price?.after == null) ? Number(primary?.price?.intro || 0) : Number(primary?.price?.after || 0);
+      const discounted = Math.max(base - packDisc, 0);
+      lines.push(`Prix: ${euro(base)}/mois → ${euro(discounted)}/mois (Pack −${packDisc}€/mois)`);
+    } else {
+      lines.push(`Prix: ${priceLineWithDiscount(primary, packDisc)}`);
+    }
     lines.push(`Alternative: ${alt.name} — ${priceLine(alt)}`);
     lines.push(`Intensité internet: ${res.intensity}`);
     lines.push(`Profil mobile: ${mp.name} — ${mp.desc}`);
+    lines.push(`Budget total estimé: ${euro(totals.totalMonthly)}/mois (soit ${euro(totals.totalMonthly/31)}/jour)`);
+    if (handset) lines.push(`Mobile choisi: ${handset.brand} ${handset.name} — ${handsetDisplayedPrice(handset)}${handset.oldPrice ? ` (au lieu de ${euro(handset.oldPrice)})` : ''}`);
     if (mOffer) {
       const p = mobilePriceWithOpen(mOffer);
       if (state.hasBox && p.discount > 0) {
@@ -1375,6 +1531,10 @@
     tags.innerHTML = '';
     tags.appendChild(badge(state.hasBox ? 'Open: OUI' : 'Open: NON'));
     if (state.wantsNewMobile != null) tags.appendChild(badge(state.wantsNewMobile ? 'Projet mobile: OUI' : 'Projet mobile: NON'));
+    if (state.selectedHandsetId) {
+      const h = selectedHandset();
+      if (h) tags.appendChild(badge(`Mobile: ${h.brand} ${h.name}`));
+    }
     if (state.housing.surface) tags.appendChild(badge(`${state.housing.surface} m²`));
     if (state.housing.type) tags.appendChild(badge(state.housing.type === 'maison' ? 'Maison' : 'Appartement'));
     if (state.housing.floors != null) tags.appendChild(badge(`${state.housing.floors} étage(s)`));
