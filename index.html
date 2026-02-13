@@ -30,7 +30,7 @@
     th { font-weight: 800; }
     .muted b, .muted strong { color: var(--text); }
 
-    .wrap{max-width:1120px; margin:0 auto; padding:20px}
+    .wrap{width:100%; max-width:none; margin:0; padding:20px 24px}
     .top{display:flex; gap:14px; align-items:flex-start; justify-content:space-between; margin:10px 0 12px}
     .brand{display:flex; gap:10px; align-items:center}
     .logo{width:40px; height:40px; border-radius:12px; background: linear-gradient(135deg, var(--accent), var(--accent2)); box-shadow: var(--shadow)}
@@ -83,7 +83,9 @@
       background: rgba(255,255,255,.03); font-size:12px; color:var(--muted)
     }
 
-    .grid{display:grid; grid-template-columns: 1.15fr .85fr; gap:16px}
+    .grid{display:grid; grid-template-columns: minmax(0,1.35fr) minmax(320px,.65fr); gap:16px}
+    .grid.client-mode{grid-template-columns: minmax(0,1fr)}
+    .grid.client-mode > .card{width:100%}
     @media (max-width: 980px){
       .grid{grid-template-columns:1fr}
       .hero{grid-template-columns:1fr}
@@ -205,6 +207,12 @@
     .rec{padding:14px; border-radius:18px; border:1px solid rgba(255,106,0,.35); background: rgba(255,106,0,.08)}
     .rec .big{font-size:16px; font-weight:900; color:var(--text)}
     .rec .price{font-weight:900; color:#ffe3d2}
+    .total-hero{padding:18px; border-radius:18px; border:1px solid rgba(255,106,0,.35); background:rgba(255,106,0,.08)}
+    .total-hero .day{font-size:40px; font-weight:900; line-height:1; color:#fff3e9}
+    .total-hero .month{font-size:16px; font-weight:800; color:#ffd8c3}
+    .toggle{display:inline-flex; gap:8px; padding:6px; border-radius:999px; border:1px solid var(--border); background:rgba(255,255,255,.04)}
+    .toggle .btn{padding:8px 12px; border-radius:999px}
+    .client-simple ul{margin:8px 0 0; padding-left:18px; color:var(--muted)}
     .list{margin:10px 0 0; padding-left:18px; color:var(--muted)}
     .list li{margin:4px 0}
 
@@ -427,6 +435,7 @@
     wantsNewMobile: null,
     selectedHandsetBrand: null,
     selectedHandsetId: null,
+    includeOptionsInTotal: false,
     housing: { surface:null, type:null, floors:null, walls:null, boxPlacement:null },
     internetUsage: [],
     mobileContext: [],
@@ -738,11 +747,11 @@
     return Math.max(base - Number(packDisc || 0), 0);
   }
 
-  function totalOfferMonthly(primaryOffer, mobileOffer, selectedOptions, packDisc){
+  function totalOfferMonthly(primaryOffer, mobileOffer, selectedOptions, packDisc, includeOptions){
     const internetMonthly = internetDisplayedMonthly(primaryOffer, packDisc);
     const mobilePricing = mobilePriceWithOpen(mobileOffer);
     const mobileMonthly = Number.isFinite(mobilePricing.open) ? mobilePricing.open : 0;
-    const optionsMonthly = selectedOptions.reduce((sum, o)=>sum + Number(o.priceMonthly || 0), 0);
+    const optionsMonthly = includeOptions ? selectedOptions.reduce((sum, o)=>sum + Number(o.priceMonthly || 0), 0) : 0;
     return {
       internetMonthly,
       mobileMonthly,
@@ -761,7 +770,7 @@
   // ---------------------------
   function buildShareURL(){
     const compact = {
-      s: state.step, m: state.mode, bx: state.hasBox, nm: state.wantsNewMobile, hb: state.selectedHandsetBrand, hm: state.selectedHandsetId,
+      s: state.step, m: state.mode, bx: state.hasBox, nm: state.wantsNewMobile, hb: state.selectedHandsetBrand, hm: state.selectedHandsetId, io: state.includeOptionsInTotal,
       h: state.housing, iu: state.internetUsage, mc: state.mobileContext, se: state.security, d: state.devices
     };
     const payload = btoa(unescape(encodeURIComponent(JSON.stringify(compact))));
@@ -784,6 +793,7 @@
       st.wantsNewMobile = (obj.nm === true) ? true : ((obj.nm === false) ? false : null);
       st.selectedHandsetBrand = obj.hb || null;
       st.selectedHandsetId = obj.hm || null;
+      st.includeOptionsInTotal = obj.io === true;
       st.housing = obj.h || st.housing;
       st.internetUsage = obj.iu || [];
       st.mobileContext = obj.mc || [];
@@ -946,6 +956,7 @@
     normalized.wantsNewMobile = (raw.wantsNewMobile === true) ? true : ((raw.wantsNewMobile === false) ? false : null);
     normalized.selectedHandsetBrand = handsetBrands().includes(raw.selectedHandsetBrand) ? raw.selectedHandsetBrand : null;
     normalized.selectedHandsetId = OFFERS.handsets.some(h=>h.id === raw.selectedHandsetId) ? raw.selectedHandsetId : null;
+    normalized.includeOptionsInTotal = raw.includeOptionsInTotal === true;
     if (normalized.selectedHandsetId) {
       const handset = OFFERS.handsets.find(h=>h.id===normalized.selectedHandsetId);
       normalized.selectedHandsetBrand = handset?.brand || normalized.selectedHandsetBrand;
@@ -1179,7 +1190,7 @@
     const packDisc = packBoxDiscount(primary?.id, hasMobile);
 
     const opts = res.options.map(id => OFFERS.options.find(o => o.id === id)).filter(Boolean);
-    const totals = totalOfferMonthly(primary, mOffer, opts, packDisc);
+    const totals = totalOfferMonthly(primary, mOffer, opts, packDisc, state.includeOptionsInTotal);
     const totalDay = totals.totalMonthly / 31;
 
     root.innerHTML = '';
@@ -1187,58 +1198,47 @@
     const totalCard = document.createElement('div');
     totalCard.className = 'card';
     totalCard.innerHTML = `
-      <div class="bd">
-        <div class="h2">Budget total estimé</div>
-        <div class="row" style="align-items:center; justify-content:space-between">
-          <div class="badge"><b>${euro(totalDay)}</b> / jour</div>
-          <div class="badge"><b>${euro(totals.totalMonthly)}</b> / mois</div>
+      <div class="bd total-hero">
+        <div class="h2">Budget total</div>
+        <div class="day">${euro(totalDay)} / jour</div>
+        <div class="month">${euro(totals.totalMonthly)} / mois</div>
+        <div class="sp"></div>
+        <div class="toggle" role="group" aria-label="Calcul du total">
+          <button type="button" class="btn ${state.includeOptionsInTotal ? 'primary' : ''}" data-total-mode="with-options">Avec options</button>
+          <button type="button" class="btn ${!state.includeOptionsInTotal ? 'primary' : ''}" data-total-mode="without-options">Sans options</button>
         </div>
-        <div class="muted" style="margin-top:8px">Inclut Internet + mobile + options sélectionnées (calcul sur 31 jours).</div>
       </div>
     `;
     root.appendChild(totalCard);
 
+    totalCard.querySelector('[data-total-mode="with-options"]').onclick = () => {
+      state.includeOptionsInTotal = true;
+      persist(); render();
+    };
+    totalCard.querySelector('[data-total-mode="without-options"]').onclick = () => {
+      state.includeOptionsInTotal = false;
+      persist(); render();
+    };
+
     if (state.mode === 'client') {
-      const recClient = document.createElement('div');
-      recClient.className = 'rec';
-      recClient.style.marginTop = '12px';
-      recClient.innerHTML = `
-        <div class="big">Votre recommandation</div>
-        <div style="margin-top:8px">
-          <div class="big" style="font-size:18px">${escapeHtml(primary.name)}</div>
-          <div class="price" style="margin-top:4px">${priceLineBeforeAfterDiscountHTML(primary, packDisc)}</div>
-        </div>
-        <div class="sp"></div>
-        <div class="row">${primary.includes.slice(0, 3).map(x=>`<span class="badge"><b>Inclus</b> ${escapeHtml(x)}</span>`).join('')}</div>
-      `;
-      root.appendChild(recClient);
-
-      const mobClient = document.createElement('div');
-      mobClient.className = 'card';
-      mobClient.style.marginTop = '12px';
-
-      let mobileLine = 'Forfait mobile à confirmer en boutique';
+      let mobileLine = 'Forfait mobile à valider en boutique';
       if (mOffer) {
         const p = mobilePriceWithOpen(mOffer);
         mobileLine = `${escapeHtml(mOffer.name)} • ${euro(state.hasBox && p.discount > 0 ? p.open : p.std)}/mois`;
       }
 
-      let handsetLine = '';
-      if (handset) {
-        handsetLine = `<div class="badge" style="margin-top:8px"><b>${escapeHtml(handset.brand)} ${escapeHtml(handset.name)}</b> • Prix proposé avec votre forfait : ${handsetDisplayedPrice(handset)}${handset.oldPrice ? ` <span class="muted">(au lieu de ${euro(handset.oldPrice)})</span>` : ''}</div>`;
-      }
-
-      mobClient.innerHTML = `
-        <div class="bd">
-          <div class="h2">Mobile recommandé</div>
-          <div class="badge"><b>${escapeHtml(mp.name)}</b> — ${escapeHtml(mp.desc)}</div>
-          <div class="sp"></div>
-          <div class="badge"><b>${mobileLine}</b></div>
-          ${handsetLine}
-          ${state.wantsNewMobile ? `<div class="muted" style="margin-top:8px">Les forfaits 200/300/500 Go peuvent inclure un avantage à l'achat mobile.</div>` : ``}
-        </div>
+      const simple = document.createElement('div');
+      simple.className = 'rec client-simple';
+      simple.style.marginTop = '12px';
+      simple.innerHTML = `
+        <div class="big">Votre offre recommandée</div>
+        <ul>
+          <li><b>Internet :</b> ${escapeHtml(primary.name)} (${priceLineWithDiscount(primary, packDisc)})</li>
+          <li><b>Mobile :</b> ${mobileLine}</li>
+          ${handset ? `<li><b>Téléphone choisi :</b> ${escapeHtml(handset.brand)} ${escapeHtml(handset.name)} (${handsetDisplayedPrice(handset)})</li>` : ''}
+        </ul>
       `;
-      root.appendChild(mobClient);
+      root.appendChild(simple);
 
       const navClient = document.createElement('div');
       navClient.className = 'btnbar';
@@ -1256,7 +1256,7 @@
           persist(); render();
         };
         safe('btnCopy').onclick = () => {
-          navigator.clipboard?.writeText(buildPlainTextRecap(res, primary, alt, mp, mOffer, opts, packDisc));
+          navigator.clipboard?.writeText(buildPlainTextRecap(res, primary, alt, mp, mOffer, opts, packDisc, state.includeOptionsInTotal));
           toast('Récap copié dans le presse-papiers.');
         };
       });
@@ -1400,16 +1400,16 @@
         persist(); render();
       };
       safe('btnCopy').onclick = () => {
-        navigator.clipboard?.writeText(buildPlainTextRecap(res, primary, alt, mp, mOffer, opts, packDisc));
+        navigator.clipboard?.writeText(buildPlainTextRecap(res, primary, alt, mp, mOffer, opts, packDisc, state.includeOptionsInTotal));
         toast('Récap copié dans le presse-papiers.');
       };
     });
   }
 
-  function buildPlainTextRecap(res, primary, alt, mp, mOffer, opts, packDisc){
+  function buildPlainTextRecap(res, primary, alt, mp, mOffer, opts, packDisc, includeOptionsInTotal){
     const lines = [];
     const handset = selectedHandset();
-    const totals = totalOfferMonthly(primary, mOffer, opts, packDisc);
+    const totals = totalOfferMonthly(primary, mOffer, opts, packDisc, includeOptionsInTotal);
     lines.push('RÉCAP CONFIGURATEUR');
     lines.push('—');
     lines.push(`Mode: ${state.mode.toUpperCase()}`);
@@ -1426,7 +1426,7 @@
     lines.push(`Alternative: ${alt.name} — ${priceLine(alt)}`);
     lines.push(`Intensité internet: ${res.intensity}`);
     lines.push(`Profil mobile: ${mp.name} — ${mp.desc}`);
-    lines.push(`Budget total estimé: ${euro(totals.totalMonthly)}/mois (soit ${euro(totals.totalMonthly/31)}/jour)`);
+    lines.push(`Budget total estimé: ${euro(totals.totalMonthly)}/mois (soit ${euro(totals.totalMonthly/31)}/jour)${includeOptionsInTotal ? ' avec options' : ' sans options'}`);
     if (handset) lines.push(`Mobile choisi: ${handset.brand} ${handset.name} — ${handsetDisplayedPrice(handset)}${handset.oldPrice ? ` (au lieu de ${euro(handset.oldPrice)})` : ''}`);
     if (mOffer) {
       const p = mobilePriceWithOpen(mOffer);
@@ -1574,6 +1574,8 @@
     // Sidebar cachée en mode client
     const side = safe('sidePanel');
     side.style.display = (state.mode === 'vendeur') ? 'grid' : 'none';
+    const grid = document.querySelector('.grid');
+    if (grid) grid.classList.toggle('client-mode', state.mode === 'client');
 
     // Debug uniquement vendeur
     const dbg = safe('stateDebug');
